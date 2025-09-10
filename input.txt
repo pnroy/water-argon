@@ -1,0 +1,45 @@
+#Wigner basis#
+jmax=	3
+
+#Integration grid#
+Ntheta=	11
+Nphi=	11
+Nchi=	11	
+
+#Rotational constants#
+Ae=	27.880692	#cm-1
+Be=	14.5214713
+Ce=	9.27788726
+
+#Iso. 3D HO basis#
+nmax=	2
+mH=	1.007825	#amu
+mO=	15.994915
+k=	4.0	#J/m^2
+dCI=	10.0	#pm
+
+#Integration grid#
+NR=	11
+Ntheta=	11
+Nphi=	11
+
+#Equilibrium structure#
+rOH=	0.95801	#A
+theta=	104.5	#degree		
+
+#Spin isomer#
+isomer=	para
+
+#Number of states#
+Nstates=	32	#0=all possible states
+
+#Temperature#
+Tstart=	0.1	#in K
+dT=	0.1
+Ntemp=	300
+
+#SVD error#
+err=	1e-4	
+
+# vibrational state
+vib= 1
