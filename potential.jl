@@ -50,7 +50,7 @@ return rot_matrix
 end
 ###############################################################################################################
 
-function potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,error,dCI,kconst,vib_state)
+function potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,error,dCI,kconst,vib_state,model)
 #function potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,error,dCI,kconst)
 
 mmax=jmax
@@ -92,8 +92,11 @@ for ip1=1:Nphi
 	for ip2=1:Nm
 	for ic=1:Nk 
 		i2 += 1
-		#Vpot[i1,i2] = cage_potential(sqrt(0.5*R[ir]/nu),acos(ctheta1[it1]),phi1[ip1],acos(ctheta2[it2]),phi2[ip2],chi[ic],eq_struct,vib_state) 
-		Vpot[i1,i2] = lo_potential(sqrt(0.5*R[ir]/nu),acos(ctheta1[it1]),phi1[ip1],acos(ctheta2[it2]),phi2[ip2],chi[ic],dCI,kconst) 
+		if model=="AI"
+			Vpot[i1,i2] = cage_potential(sqrt(0.5*R[ir]/nu),acos(ctheta1[it1]),phi1[ip1],acos(ctheta2[it2]),phi2[ip2],chi[ic],eq_struct,vib_state) 
+		elseif model=="LO"
+			Vpot[i1,i2] = lo_potential(sqrt(0.5*R[ir]/nu),acos(ctheta1[it1]),phi1[ip1],acos(ctheta2[it2]),phi2[ip2],chi[ic],dCI,kconst) 
+		end
 		#Vpot[i1,i2]=0.5*mass*(omega^2)*(0.5*R[ir]/nu)
 	end
 	end

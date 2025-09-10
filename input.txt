@@ -43,3 +43,6 @@ err=	1e-4
 
 # vibrational state
 vib= 1
+
+# model 0: LO (Local Oscillator) or 1: AI (Ab initio)
+model= 0

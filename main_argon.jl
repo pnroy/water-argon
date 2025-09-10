@@ -245,7 +245,17 @@ svd_err=parse(Float64, lsplit[2])
 
 lsplit=split(lines[45])
 vib_state=parse(Int64, lsplit[2])
+
+lsplit=split(lines[48])
+model_flag=parse(Int64, lsplit[2])
 close(f)
+model="AI"
+if model_flag==0
+	model="LO"
+end
+if model_flag==1
+	model="AI"
+end
 
 #Check if Nm and Nk are odd#
 if mod(Nm,2) == 0
