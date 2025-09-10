@@ -391,7 +391,7 @@ println(f,"Calculate cage potential matrix")
 close(f)
 
 #Calculate cage potential in product basis#
-Cpot,Vtrans_matrix,Vrot_matrix = potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,svd_err,dCI,kconst,vib_state)
+Cpot,Vtrans_matrix,Vrot_matrix = potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,svd_err,dCI,kconst,vib_state,model)
 trig_matrix=trigo_euler_matrix(jmax,Nalpha,Nm,Nk,Nrot)
 # 1 cϕsθ Jx
 # 2 sϕsθ Jx
