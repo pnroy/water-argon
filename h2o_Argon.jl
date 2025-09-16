@@ -19,10 +19,10 @@ X=R*sin(theta1)*cos(phi1)
 Y=R*sin(theta1)*sin(phi1)
 Z=R*cos(theta1)
 
-COM = zeros(3)
-COM[1] = R*sin(theta1)*cos(phi1)
-COM[2] = R*sin(theta1)*sin(phi1)
-COM[3] = R*cos(theta1)
+# COM = zeros(3)
+# COM[1] = R*sin(theta1)*cos(phi1)
+# COM[2] = R*sin(theta1)*sin(phi1)
+# COM[3] = R*cos(theta1)
 
 #Read coordinates of cage atoms#
 f = open("Ar.xyz") 
@@ -47,8 +47,6 @@ for i=1:Ncage
 	rAr_COM[1]=Aratoms[i,1]-X
 	rAr_COM[2]=Aratoms[i,2]-Y
 	rAr_COM[3]=Aratoms[i,3]-Z
-
-	#rAr_COM=Aratoms[i,:]-COM
 	dist=norm(rAr_COM)
 	# get theta and phi from rotation matrix
 	#Rotate molecule by Euler angles around COM, matrix is for BFF to SFF, use transpose

@@ -53,7 +53,7 @@ for i in range(N):
     if i!=int(index_vac):
         f.write('Ar ')
         for a in range(3):
-            f.write(str(r*((R[i][a]-R[int(index_vac)][a]))/dist/np.sqrt(2))+' ')
+            f.write(str(r*((R[i][a]-R[int(index_vac)][a]))/dist)+' ')
         f.write('\n')
 
 #integrator = mm.LangevinIntegrator(300*unit.kelvin, 1.0/unit.picoseconds,1.0*unit.femtoseconds)
