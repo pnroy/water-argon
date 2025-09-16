@@ -102,7 +102,7 @@ function potential(R,theta,phi,chi,vmat,Ngrid)
 			#	cmd_object = eval(expr)
 			#	value=parse(Float64,readchomp(cmd_object))
 				result_ref = Ref{Float64}()
-				ccall((:h2oar_3dpes_, "./potlibarh20.dylib"), Nothing, (Ref{Float64}, Ref{Float64},Ref{Float64}, Ref{Float64},Ref{Float64}), theta_BFF, phi_BFF,dist,result_ref,1)
+				ccall((:h2oar_3dpes_, "./potlibarh20.dylib"), Nothing, (Ref{Float64}, Ref{Float64},Ref{Float64}, Ref{Float64},Ref{Float64}), phi_BFF,theta_BFF,dist,result_ref,1)
 				value=result_ref[]
 		end
 		V+=value

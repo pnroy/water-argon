@@ -57,8 +57,8 @@ end
 function potential(R,theta,phi,chi)
 
 	#Read coordinates of cage atoms#
-	#f = open("Ar.xyz") 
-	f = open("lattice.xyz") 
+	f = open("Ar.xyz") 
+	#f = open("lattice.xyz") 
 	lines = readlines(f)
 	close(f)
 	lsplit = split(lines[1])
@@ -95,7 +95,7 @@ function potential(R,theta,phi,chi)
 		#	cmd_object = eval(expr)
 		#	value=parse(Float64,readchomp(cmd_object))
 			result_ref = Ref{Float64}()
-			ccall((:h2oar_3dpes_, "./potlibarh20.dylib"), Nothing, (Ref{Float64}, Ref{Float64},Ref{Float64}, Ref{Float64},Ref{Int}), theta_BFF, phi_BFF,dist,result_ref,1)
+			ccall((:h2oar_3dpes_, "./potlibarh20.dylib"), Nothing, (Ref{Float64}, Ref{Float64},Ref{Float64}, Ref{Float64},Ref{Int}), phi_BFF,theta_BFF ,dist,result_ref,1)
 			value=result_ref[]
 		V+=value
 	end
@@ -116,34 +116,34 @@ let
 	a0tom=0.529177210903e-10 
 	a0topm=52.9177210903
 
-	# generate cage coordinates
-	l=[-1/sqrt(2),1/sqrt(2)]
-	l=3.72*l
-	f=open("Ar.xyz","w")
-	println(f,"12")
-	println(f," ")
-	atom_index="Ar"
-	for i=1:2
-		for j=1:2
-			x=l[i]
-			y=l[j]
-			z=0
-			#global atom_index+=1
-			#println("Ar ",x," ",y," ",z)
-			println(f,atom_index," ",x," ",y," ",z)
-			x=l[i]
-			z=l[j]
-			y=0
-			#global atom_index+=1
-			println(f,atom_index," ",x," ",y," ",z)
-			y=l[i]
-			z=l[j]
-			x=0
-			#global atom_index+=1
-			println(f,atom_index," ",x," ",y," ",z)
-		end
-	end
-	close(f)
+	# # generate cage coordinates
+	# l=[-1/sqrt(2),1/sqrt(2)]
+	# l=3.72*l
+	# f=open("Ar.xyz","w")
+	# println(f,"12")
+	# println(f," ")
+	# atom_index="Ar"
+	# for i=1:2
+	# 	for j=1:2
+	# 		x=l[i]
+	# 		y=l[j]
+	# 		z=0
+	# 		#global atom_index+=1
+	# 		#println("Ar ",x," ",y," ",z)
+	# 		println(f,atom_index," ",x," ",y," ",z)
+	# 		x=l[i]
+	# 		z=l[j]
+	# 		y=0
+	# 		#global atom_index+=1
+	# 		println(f,atom_index," ",x," ",y," ",z)
+	# 		y=l[i]
+	# 		z=l[j]
+	# 		x=0
+	# 		#global atom_index+=1
+	# 		println(f,atom_index," ",x," ",y," ",z)
+	# 	end
+	# end
+	# close(f)
 
 	kconst=(4.0/eHtoJ)*(a0tom^2)
 	dCI=10.0/a0topm	

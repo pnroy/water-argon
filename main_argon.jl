@@ -64,6 +64,37 @@ function Hv!(y::AbstractVector,x::AbstractVector)
 			Mv3[:,i] .+= rot_R + im*rot_I
 		end
 	end
+
+
+	#Transform from NLM-basis to (R,theta,phi)-grid#
+	# for i=1:Nrot
+	# tempv_R = transformation_forward_HO(wf_R[i,:],nmax,NR,Ntheta,Nphi,nu,mass)
+	# tempv_I = transformation_forward_HO(wf_I[i,:],nmax,NR,Ntheta,Nphi,nu,mass)
+	# end
+	# for i=1:Ntrans
+	# 	wf_grid_R = transformation_forward_Wigner(tempv_R[:,i],jmax,mmax,kmax,Nalpha,Nm,Nk)
+	# 	wf_grid_I = transformation_forward_Wigner(tempv_I[:,i],jmax,mmax,kmax,Nalpha,Nm,Nk)
+	# end
+	# 	#Multipliy transformed vectors with potential on grid#
+	# 	for ig1=1:Ngrid1
+	# 		for ig2=1:Ngrid2
+	# 			coeff_grid[ig1,ig2] = Vpot[ig1,ig2]*coeff1_out[ig1]*coeff2_out[ig2]
+	# 		end
+	# 		#Transform from (Theta,phi,chi)-grid to JKM-basis#
+	# 		coeff_tmp[ig1,:] .= transformation_backward_Wigner(coeff_grid[ig1,:],jmax,mmax,kmax,Nalpha,Nm,Nk,Nrot)
+	# 	end	
+	# 	#Transform from (R,theta,phi)-grid to NLM-basis#
+	# 	for j=1:Nrot
+	# 		coeff_end[:,j] = transformation_backward_HO(coeff_tmp[:,j],nmax,NR,Ntheta,Nphi,nu,mass,Ntrans)
+	# 	end
+	
+	# 	for i=1:Ntrans
+	# 	for j=1:Nrot
+	# 		matrix[i,ispec1,j,ispec2] = coeff_end[i,j]
+	# 	end
+	# 	end
+	# end
+
 	
 
 	k=0
@@ -202,6 +233,7 @@ nu=mass*omega*0.5
 lsplit=split(lines[19])
 dCI=parse(Float64, lsplit[2])
 dCI=dCI/a0topm
+
 
 #lsplit=split(lines[22])
 #mass=parse(Float64, lsplit[2])
@@ -392,6 +424,7 @@ close(f)
 
 #Calculate cage potential in product basis#
 Cpot,Vtrans_matrix,Vrot_matrix = potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,svd_err,dCI,kconst,vib_state,model)
+#Cpot,Vtrans_matrix,Vrot_matrix = potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,svd_err,dCI,kconst,vib_state,model)
 trig_matrix=trigo_euler_matrix(jmax,Nalpha,Nm,Nk,Nrot)
 # 1 cϕsθ Jx
 # 2 sϕsθ Jx

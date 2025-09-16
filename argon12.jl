@@ -7,6 +7,8 @@ l=[-1/sqrt(2),1/sqrt(2)]
 #distance from lattice constant
 dist=5.311/sqrt(2)
 
+#distance from PES
+#dist=3.63
 l=dist*l
 
 f=open("Ar.xyz","w")

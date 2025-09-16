@@ -1,4 +1,4 @@
-module potential
+module potential_nosvd
 
 using LinearAlgebra
 using SpecialFunctions
@@ -9,12 +9,14 @@ using GaussQuadrature: laguerre,legendre
 using FFTW
 push!(LOAD_PATH,pwd())
 using kinetic
-using h2o_c60
+using h2o_Argon
 
 export potential_matrix
 
 ###############################################################################################################
-function potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct)
+#function potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct)
+function potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,dCI,kconst,vib_state,model)
+
 
 mmax=jmax
 kmax=jmax
@@ -46,7 +48,7 @@ end
 Vpot = zeros(Ngrid1,Ngrid2)
 
 i1=0
-for ir=1:NR
+Threads.@threads for ir=1:NR
 for it1=1:Ntheta
 for ip1=1:Nphi
 	i1+=1
@@ -55,14 +57,22 @@ for ip1=1:Nphi
 	for ip2=1:Nm
 	for ic=1:Nk 
 		i2 += 1
-		Vpot[i1,i2] = cage_potential(mass,omega,sqrt(0.5*R[ir]/nu),acos(ctheta1[it1]),phi1[ip1],acos(ctheta2[it2]),phi2[ip2],chi[ic],eq_struct) 
+		#Vpot[i1,i2] = cage_potential(mass,omega,sqrt(0.5*R[ir]/nu),acos(ctheta1[it1]),phi1[ip1],acos(ctheta2[it2]),phi2[ip2],chi[ic],eq_struct) 
 		#Vpot[i1,i2]=0.5*mass*(omega^2)*(0.5*R[ir]/nu)
+		if model=="AI"
+			Vpot[i1,i2] = cage_potential(sqrt(0.5*R[ir]/nu),acos(ctheta1[it1]),phi1[ip1],acos(ctheta2[it2]),phi2[ip2],chi[ic],eq_struct,vib_state) 
+		elseif model=="LO"
+			Vpot[i1,i2] = lo_potential(sqrt(0.5*R[ir]/nu),acos(ctheta1[it1]),phi1[ip1],acos(ctheta2[it2]),phi2[ip2],chi[ic],dCI,kconst) 
+		end
+
 	end
 	end
 	end
 end
 end
 end
+
+println("potential on grid done")
 
 coeff1 = zeros(ComplexF64,Ntrans)
 coeff2 = zeros(ComplexF64,Nrot)
@@ -72,7 +82,7 @@ coeff_end = zeros(ComplexF64,(Ntrans,Nrot))
 matrix = zeros(ComplexF64,(Ntrans,Ntrans,Nrot,Nrot))
 
 
-for ispec1=1:Ntrans
+Threads.@threads for ispec1=1:Ntrans
 	coeff1 .= 0.0
 	coeff1[ispec1] = 1.0
 	#Transform from NLM-basis to (R,theta,phi)-grid#

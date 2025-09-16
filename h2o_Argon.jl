@@ -64,7 +64,7 @@ for i=1:Ncage
 #  iv=4 for (v1,v2,v3)=(0,0,1). 
 
 	result_ref = Ref{Float64}()
-	ccall((:h2oar_3dpes_, "./potlibarh20.dylib"), Nothing, (Ref{Float64}, Ref{Float64},Ref{Float64}, Ref{Float64},Ref{Int}), theta_BFF, phi_BFF,dist,result_ref,iv)
+	ccall((:h2oar_3dpes_, "./potlibarh20.dylib"), Nothing, (Ref{Float64}, Ref{Float64},Ref{Float64}, Ref{Float64},Ref{Int}), phi_BFF,theta_BFF,dist,result_ref,iv)
 	value=result_ref[]
 
 	V+=value
