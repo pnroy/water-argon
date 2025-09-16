@@ -7,7 +7,7 @@ l=[-1/sqrt(2),1/sqrt(2)]
 #distance from lattice constant
 dist=5.311/sqrt(2)
 
-#distance from PES
+#distance from minimum of Ar-H2O PES
 #dist=3.63
 l=dist*l
 

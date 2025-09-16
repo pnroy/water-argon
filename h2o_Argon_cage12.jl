@@ -85,7 +85,7 @@ function potential(R,theta,phi,chi)
 		#Rotate molecule by Euler angles around COM, matrix is for BFF to SFF, use transpose
 		Rot=rotation_matrix(theta,phi,chi)
 		rAr_BFF=BLAS.gemv('T' , 1.0, Rot, rAr_COM)
-		theta_BFF=acos(rAr_BFF[3]/dist)
+		theta_BFF=acos(round(rAr_BFF[3]/dist))
 		# atan2 below
 		phi_BFF=atan(rAr_BFF[2],rAr_BFF[1])
 
@@ -194,7 +194,7 @@ let
 	end
 	close(f)
 
-	theta=0.0
+	theta=pi/2
 	phi=0.0
 	chi=0.0
 	Rmax=.3
@@ -208,10 +208,10 @@ let
 	println(f2," ")
 
 
-	Theta=pi/4.0
+	Theta=pi/3.0
 	#Theta=pi/2.0
-	Theta=0.0
-	Phi=pi
+	#Theta=0.0
+	Phi=0
 	for i=0:N
 		Rmag=i*dR
 		R[1]=Rmag*sin(Theta)*cos(Phi)
