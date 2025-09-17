@@ -2,15 +2,15 @@
 ###########Basis information###########
 #######################################
 #Rotation#
-jmax= 3, mmax= 3, kmax= 3
+jmax= 2, mmax= 2, kmax= 2
 Ntheta= 9, Nphi= 9, Nchi= 9
-Dimension of local Hilbert space: 84
-Dimension of para Hilbert space: 40
-Dimension of ortho Hilbert space: 44
+Dimension of local Hilbert space: 35
+Dimension of para Hilbert space: 19
+Dimension of ortho Hilbert space: 16
 #Translation#
 nmax= 2, lmax= 2, mmax= 2
 NR= 9, Ntheta= 9, Nphi= 9
-mass= 18.010565 omega= 0.00018021084673145672
+mass= 18.010565 omega= 0.000279741486857207
 Dimension of local Hilbert space: 10
 #######################################
 #####Rotational constants in cm^-1#####
@@ -19,3 +19,19 @@ Ae= 27.880691999999996, Be= 14.521471299999998, Ce= 9.27788726
 #######################################
 
 Calculate cage potential matrix
+##Decompose cage potential on grid by SVD##
+Number of products: 4
+Chosen SV error: 0.0001
+Sum of first Nprod SV: 0.999999999999859
+Frobenius norm = 4.791417692802429e-15
+Fnorm divided by matrix size= 9.015897706052842e-21
+
+Cage potential matrix done
+Start diagonalization
+Para isomer:
+Ortho isomer:
+Write eigenvalues
+
+Calculate heat capacity
+Heat capacity done
+

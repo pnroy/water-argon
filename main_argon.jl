@@ -571,7 +571,7 @@ let
 	e_para,Wpara = Arpack.eigs(D,nev=Nstates,which=:SR)
 
 	#rotational analysis
-	println("rotational analysis")
+	println("rotational analysis para")
 	for state=1:Nstates
 		println(real(e_para[state]-e_para[1])*eHtocm1)
 
@@ -592,7 +592,7 @@ let
 	end
 	#translational analysis
 	e_t,ev_t=eigen(H3D_real)
-	println("translational analysis")
+	println("translational analysis para")
 
 	for state=1:Nstates
 		println(real(e_para[state]-e_para[1])*eHtocm1)
@@ -666,9 +666,9 @@ let
 	Nsize_ortho	= Nstates
 
 	#rotational analysis
-	println("rotational analysis")
+	println("rotational analysis ortho")
 	for state=1:Nstates
-		println(real(e_ortho[state]-e_ortho[1])*eHtocm1)
+		println(real(e_ortho[state]-e_para[1])*eHtocm1)
 
 		for n=1:Nrot
 			ov=0.0	
@@ -687,10 +687,10 @@ let
 	end
 	#translational analysis
 	e_t,ev_t=eigen(H3D_real)
-	println("translational analysis")
+	println("translational analysis ortho")
 
 	for state=1:Nstates
-		println(real(e_ortho[state]-e_ortho[1])*eHtocm1)
+		println(real(e_ortho[state]-e_para[1])*eHtocm1)
 
 		for n=1:Ntrans
 			ov=0.0	

@@ -1,5 +1,5 @@
 #Wigner basis#
-jmax=	3
+jmax=	2
 
 #Integration grid#
 Ntheta=	9
@@ -15,7 +15,7 @@ Ce=	9.27788726
 nmax=	2
 mH=	1.007825	#amu
 mO=	15.994915
-k=	1.66	#J/m^2
+k=	4.0	#J/m^2
 dCI=	10.0	#pm
 
 #Integration grid#
@@ -31,7 +31,7 @@ theta=	104.5	#degree
 isomer=	para
 
 #Number of states#
-Nstates=	16	#0=all possible states
+Nstates=	32	#0=all possible states
 
 #Temperature#
 Tstart=	0.1	#in K
@@ -39,10 +39,10 @@ dT=	0.1
 Ntemp=	300
 
 #SVD error#
-err=	1e-4	
+err=	1e-4
 
 # vibrational state
 vib= 1
 
 # model 0: LO (Local Oscillator) or 1: AI (Ab initio)
-model= 1
+model= 0

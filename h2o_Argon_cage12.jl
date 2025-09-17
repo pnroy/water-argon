@@ -145,8 +145,9 @@ let
 	# end
 	# close(f)
 
-	kconst=(4.0/eHtoJ)*(a0tom^2)
-	dCI=10.0/a0topm	
+
+	kconst=(2.0/eHtoJ)*(a0tom^2)
+	dCI=7.0/a0topm	
 
 	N=50
 
@@ -194,7 +195,7 @@ let
 	end
 	close(f)
 
-	theta=pi/2
+	theta=0.0
 	phi=0.0
 	chi=0.0
 	Rmax=.3
@@ -208,9 +209,9 @@ let
 	println(f2," ")
 
 
-	Theta=pi/3.0
+	#Theta=pi/3.0
 	#Theta=pi/2.0
-	#Theta=0.0
+	Theta=pi/4
 	Phi=0
 	for i=0:N
 		Rmag=i*dR
