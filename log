@@ -3,28 +3,28 @@
 #######################################
 #Rotation#
 jmax= 3, mmax= 3, kmax= 3
-Ntheta= 21, Nphi= 21, Nchi= 21
+Ntheta= 9, Nphi= 9, Nchi= 9
 Dimension of local Hilbert space: 84
 Dimension of para Hilbert space: 40
 Dimension of ortho Hilbert space: 44
 #Translation#
 nmax= 2, lmax= 2, mmax= 2
-NR= 21, Ntheta= 21, Nphi= 21
+NR= 9, Ntheta= 9, Nphi= 9
 mass= 18.010565 omega= 0.000279741486857207
 Dimension of local Hilbert space: 10
 #######################################
 #####Rotational constants in cm^-1#####
 #######################################
-Ae= 27.880691999999996, Be= 14.521471299999998, Ce= 9.27788726
+Ae= 27.8806, Be= 14.5216, Ce= 9.2778
 #######################################
 
 Calculate cage potential matrix
 ##Decompose cage potential on grid by SVD##
-Number of products: 4
+Number of products: 157
 Chosen SV error: 1.0e-6
-Sum of first Nprod SV: 0.9999999999987258
-Frobenius norm = 1.3562360897878809e-12
-Fnorm divided by matrix size= 1.581319143240582e-20
+Sum of first Nprod SV: 0.9999990309209865
+Frobenius norm = 7.630596052700764e-7
+Fnorm divided by matrix size= 1.4358312687016552e-12
 
 Cage potential matrix done
 Start diagonalization

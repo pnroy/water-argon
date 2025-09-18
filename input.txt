@@ -2,9 +2,9 @@
 jmax=	3
 
 #Integration grid#
-Ntheta=	21
-Nphi=	21
-Nchi=	21	
+Ntheta=	9
+Nphi=	9
+Nchi=	9	
 
 #Rotational constants#
 Ae=	27.880692	#cm-1
@@ -19,9 +19,9 @@ k=	4.0	#J/m^2
 dCI=	10.0	#pm
 
 #Integration grid#
-NR=	21
-Ntheta=	21
-Nphi=	21
+NR=	9
+Ntheta=	9
+Nphi=	9
 
 #Equilibrium structure#
 rOH=	0.95801	#A
@@ -45,4 +45,4 @@ err=	1e-6
 vib= 1
 
 # model 0: LO (Local Oscillator) or 1: AI (Ab initio)
-model= 0
+model= 1
