@@ -727,14 +727,19 @@ let
 	fto=open("transitions_ortho.txt","w")
 	for istates=1:Nsize_para
 		println(fp,round(real(e_para[istates])*eHtocm1,digits=18)," ",round(real(e_para[istates]-e_para[1])*eHtocm1,digits=16)," ",round(real(e_para[istates]-0.5*kconst*dCI*dCI)*eHtocm1,digits=18))
-		print(ftp,round(real(e_para[istates]-e_para[1])*eHtocm1,digits=4))
+		print(ftp,round(real(e_para[istates]-e_para[1])*eHtocm1,digits=2))
 		for jstates=(istates+1):Nsize_para
-			print(ftp," ",round(real(e_para[jstates]-e_para[istates])*eHtocm1,digits=4))
+			print(ftp," ",round(real(e_para[jstates]-e_para[istates])*eHtocm1,digits=2))
 		end
 		println(ftp," ")
 	end
 	for istates=1:Nsize_ortho
 		println(fo,round(real(e_ortho[istates])*eHtocm1,digits=18)," ",round(real(e_ortho[istates]-e_para[1])*eHtocm1,digits=16)," ",round(real(e_ortho[istates]-0.5*kconst*dCI*dCI)*eHtocm1,digits=18))
+		print(fto,round(real(e_ortho[istates]-e_para[1])*eHtocm1,digits=2))
+		for jstates=(istates+1):Nsize_ortho
+			print(fto," ",round(real(e_ortho[jstates]-e_ortho[istates])*eHtocm1,digits=2))
+		end
+		println(fto," ")
 	end
 
 	close(fp)
