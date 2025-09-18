@@ -575,9 +575,10 @@ let
 	e_para,Wpara = Arpack.eigs(D,nev=Nstates,which=:SR)
 
 	#rotational analysis
-	println("rotational analysis para")
+	fp = open("wavefunction_para.txt", "a")
+	println(fp, "rotational analysis para")
 	for state=1:Nstates
-		println(real(e_para[state]-e_para[1])*eHtocm1)
+		println(fp, real(e_para[state]-e_para[1])*eHtocm1)
 
 		for n=1:Nrot
 			ov=0.0	
@@ -589,17 +590,17 @@ let
 			end
 			end
 			if ov>0.01
-				println(n," ",e_Tpara_spin[n]*eHtocm1," ",ov)
+				println(fp, n," ",e_Tpara_spin[n]*eHtocm1," ",ov)
 			end
 		end
-		println()
+		println(fp)
 	end
 	#translational analysis
 	e_t,ev_t=eigen(H3D_real)
-	println("translational analysis para")
+	println(fp, "translational analysis para")
 
 	for state=1:Nstates
-		println(real(e_para[state]-e_para[1])*eHtocm1)
+		println(fp, real(e_para[state]-e_para[1])*eHtocm1)
 
 		for n=1:Ntrans
 			ov=0.0	
@@ -611,12 +612,12 @@ let
 			end
 			end
 			if ov>0.01
-				println(n," ",e_t[n]*eHtocm1," ",ov)
+				println(fp, n," ",e_t[n]*eHtocm1," ",ov)
 			end
 		end
-		println()
+		println(fp)
 	end
-
+	close(fp)
 	# explicit diag
 	#Nsize_para=Ntrans*Nrot
 	# Hexp= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
@@ -670,9 +671,10 @@ let
 	Nsize_ortho	= Nstates
 
 	#rotational analysis
-	println("rotational analysis ortho")
+	fo = open("wavefunction_ortho.txt", "a")
+	println(fo, "rotational analysis ortho")
 	for state=1:Nstates
-		println(real(e_ortho[state]-e_para[1])*eHtocm1)
+		println(fo, real(e_ortho[state]-e_para[1])*eHtocm1)
 
 		for n=1:Nrot
 			ov=0.0	
@@ -684,17 +686,17 @@ let
 			end
 			end
 			if ov>0.01
-				println(n," ",e_Tortho_spin[n]*eHtocm1," ",ov)
+				println(fo, n," ",e_Tortho_spin[n]*eHtocm1," ",ov)
 			end
 		end
-		println()
+		println(fo)
 	end
 	#translational analysis
 	e_t,ev_t=eigen(H3D_real)
-	println("translational analysis ortho")
+	println(fo, "translational analysis ortho")
 
 	for state=1:Nstates
-		println(real(e_ortho[state]-e_para[1])*eHtocm1)
+		println(fo, real(e_ortho[state]-e_para[1])*eHtocm1)
 
 		for n=1:Ntrans
 			ov=0.0	
@@ -706,12 +708,12 @@ let
 			end
 			end
 			if ov>0.01
-				println(n," ",e_t[n]*eHtocm1," ",ov)
+				println(fo, n," ",e_t[n]*eHtocm1," ",ov)
 			end
 		end
-		println()
+		println(fo)
 	end
-
+	close(fo)
 
 
 	f=open("log","a")
