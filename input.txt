@@ -1,10 +1,10 @@
 #Wigner basis#
-jmax=	2
+jmax=	3
 
 #Integration grid#
-Ntheta=	9
-Nphi=	9
-Nchi=	9	
+Ntheta=	21
+Nphi=	21
+Nchi=	21	
 
 #Rotational constants#
 Ae=	27.880692	#cm-1
@@ -19,9 +19,9 @@ k=	4.0	#J/m^2
 dCI=	10.0	#pm
 
 #Integration grid#
-NR=	9
-Ntheta=	9
-Nphi=	9
+NR=	21
+Ntheta=	21
+Nphi=	21
 
 #Equilibrium structure#
 rOH=	0.95801	#A
@@ -39,7 +39,7 @@ dT=	0.1
 Ntemp=	300
 
 #SVD error#
-err=	1e-4
+err=	1e-6
 
 # vibrational state
 vib= 1

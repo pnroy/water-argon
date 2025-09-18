@@ -715,13 +715,13 @@ let
 	println(f)
 	close(f)
 	
-	fp=open("energies_para.txt","w")
-	fo=open("energies_ortho.txt","w")
+	fp=open("energies_para.txt","a")
+	fo=open("energies_ortho.txt","a")
 	for istates=1:Nsize_para
-		println(fp,round(real(e_para[istates])*eHtocm1,digits=18)," ",round(real(e_para[istates]-e_para[1])*eHtocm1,digits=16))
+		println(fp,round(real(e_para[istates])*eHtocm1,digits=18)," ",round(real(e_para[istates]-e_para[1])*eHtocm1,digits=16)," ",round(real(e_para[istates]-0.5*kconst*dCI*dCI)*eHtocm1,digits=18))
 	end
 	for istates=1:Nsize_ortho
-		println(fo,round(real(e_ortho[istates])*eHtocm1,digits=18)," ",round(real(e_ortho[istates]-e_para[1])*eHtocm1,digits=16))
+		println(fo,round(real(e_ortho[istates])*eHtocm1,digits=18)," ",round(real(e_ortho[istates]-e_para[1])*eHtocm1,digits=16)," ",round(real(e_ortho[istates]-0.5*kconst*dCI*dCI)*eHtocm1,digits=18))
 	end
 
 	close(fp)
