@@ -288,6 +288,9 @@ end
 if model_flag==1
 	model="AI"
 	Ae = 27.8806/eHtocm1;Be = 14.5216/eHtocm1;Ce=9.2778/eHtocm1
+	kconst=(1.0/eHtoJ)*(a0tom^2)
+	omega=sqrt(kconst/mass)
+	nu=mass*omega*0.5
 	if vib_state==4
 			Ae = 26.6303/eHtocm1;Be = 14.4225/eHtocm1;Ce=9.1418/eHtocm1
 	end
@@ -429,7 +432,8 @@ close(f)
 #Calculate cage potential in product basis#
 Cpot,Vtrans_matrix,Vrot_matrix = potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,svd_err,dCI,kconst,vib_state,model)
 #Cpot,Vtrans_matrix,Vrot_matrix = potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,svd_err,dCI,kconst,vib_state,model)
-#trig_matrix=trigo_euler_matrix(jmax,Nalpha,Nm,Nk,Nrot)
+trig_matrix=trigo_euler_matrix(jmax,Nalpha,Nm,Nk,Nrot)
+#dipole_matrix=dipole_basis(jmax,Nalpha,Nm,Nk,Nrot)
 # 1 cϕsθ Jx
 # 2 sϕsθ Jx
 # 3 cθ Jx
@@ -453,6 +457,8 @@ close(f)
 Vtrans = zeros(Float64,(Ntrans,Ntrans,Nprod))
 Vpara = zeros(Float64,(Npara,Npara,Nprod))
 Vortho = zeros(Float64,(Northo,Northo,Nprod))
+mu_para = zeros(Float64,(Npara,Npara,3))
+mu_ortho = zeros(Float64,(Northo,Northo,3))
 
 for ip=1:Nprod
 	#Transform 3D-HO to real basis#
@@ -463,6 +469,13 @@ for ip=1:Nprod
 	Vpara[:,:,ip] = real(transform_realbasis(Upara,tmp))
 	tmp = spin_isomer("ortho",jmax,Vrot_matrix[:,:,ip])
 	Vortho[:,:,ip] = real(transform_realbasis(Uortho,tmp))
+end
+
+for ip=1:3
+	tmp = spin_isomer("para",jmax,trig_matrix[ip,:,:])
+	mu_para[:,:,ip] = real(transform_realbasis(Upara,tmp))
+	tmp = spin_isomer("ortho",jmax,trig_matrix[ip,:,:])
+	mu_ortho[:,:,ip] = real(transform_realbasis(Uortho,tmp))
 end
 
 ###############################################
@@ -522,15 +535,7 @@ println(f,"#Npara= ",Npara)
 println(f,"#Nportho= ",Northo)
 println(f)
 close(f)
-#
-#f=open("polarizability.txt","w")
-#println(f,"nmax= ",nmax," NR= ",NR," Ntheta= ",Ntheta," Nphi= ",Nphi)
-#println(f,"jmax= ",jmax," Nalpha= ",Nalpha," Nphi= ",Nm," Nchi= ",Nk)
-#println(f,"Ntrans= ",Ntrans)
-#println(f,"Nrot= ",Nrot2)
-#println(f,"Spin isomer: ",isomer)
-#println(f)
-#close(f)
+
 
 
 I2m=A*[im,im-1.0,0,im+1,-im]
@@ -543,8 +548,6 @@ let
 	close(f) 
 	
 	global Trot_spin = Tpara_spin
-	global Tpara_spin_SR = Tpara_spin
-	global Tortho_spin_SR = Tortho_spin
 	global Vrot = Vpara
 	global Nrot=Npara
 	global wf = zeros(ComplexF64,(Npara,Ntrans))
@@ -568,17 +571,18 @@ let
 	global Vq1 = Vq1_p
 	global D1 = D1_p
 
-	Nsize_para=Nstates
 
 	D = LinearMap{ComplexF64}(Hv!,Ntrans*Nrot,ishermitian=true,ismutating=true)
 
 	e_para,Wpara = Arpack.eigs(D,nev=Nstates,which=:SR)
 
+	#reduced density matrices
+
 	#rotational analysis
-	fp = open("wavefunction_para.txt", "a")
+	fp = open("wavefunction_para.txt", "w")
 	println(fp, "rotational analysis para")
 	for state=1:Nstates
-		println(fp, real(e_para[state]-e_para[1])*eHtocm1)
+		println(fp, round(real(e_para[state]-e_para[1])*eHtocm1,digits=2))
 
 		for n=1:Nrot
 			ov=0.0	
@@ -589,18 +593,30 @@ let
 				ov+=real(ev_Tpara_spin[ir,n]*Wpara[k,state]*conj(ev_Tpara_spin[ir,n]*Wpara[k,state]))
 			end
 			end
-			if ov>0.01
-				println(fp, n," ",e_Tpara_spin[n]*eHtocm1," ",ov)
+			if ov>0.02
+				println(fp, n," ",round(e_Tpara_spin[n]*eHtocm1,digits=2)," ",round(ov,digits=2))
 			end
 		end
 		println(fp)
 	end
 	#translational analysis
 	e_t,ev_t=eigen(H3D_real)
+	# create list of
+	H3DList=[]
+	for n1=0:nmax
+	for l1=n1:-2:0
+	for m1=-l1:l1
+	k1 = Int((n1-l1)/2)
+		push!(H3DList,(n1,l1))
+	end
+	end
+	end
+
+
 	println(fp, "translational analysis para")
 
 	for state=1:Nstates
-		println(fp, real(e_para[state]-e_para[1])*eHtocm1)
+		println(fp, round(real(e_para[state]-e_para[1])*eHtocm1,digits=2))
 
 		for n=1:Ntrans
 			ov=0.0	
@@ -611,8 +627,8 @@ let
 				ov+=real(ev_t[it,n]*Wpara[k,state]*conj(ev_t[it,n]*Wpara[k,state]))
 			end
 			end
-			if ov>0.01
-				println(fp, n," ",e_t[n]*eHtocm1," ",ov)
+			if ov>0.02
+				println(fp, n," ",H3DList[n]," ",round(ov,digits=2))
 			end
 		end
 		println(fp)
@@ -668,13 +684,11 @@ let
 
 	e_ortho,Wortho = Arpack.eigs(D,nev=Nstates,which=:SR)
 
-	Nsize_ortho	= Nstates
-
 	#rotational analysis
-	fo = open("wavefunction_ortho.txt", "a")
+	fo = open("wavefunction_ortho.txt", "w")
 	println(fo, "rotational analysis ortho")
 	for state=1:Nstates
-		println(fo, real(e_ortho[state]-e_para[1])*eHtocm1)
+		println(fo, round(real(e_ortho[state]-e_para[1])*eHtocm1,digits=2))
 
 		for n=1:Nrot
 			ov=0.0	
@@ -685,8 +699,8 @@ let
 				ov+=real(ev_Tortho_spin[ir,n]*Wortho[k,state]*conj(ev_Tortho_spin[ir,n]*Wortho[k,state]))
 			end
 			end
-			if ov>0.01
-				println(fo, n," ",e_Tortho_spin[n]*eHtocm1," ",ov)
+			if ov>0.02
+				println(fo, n," ",round(e_Tortho_spin[n]*eHtocm1,digits=2)," ",round(ov,digits=2))
 			end
 		end
 		println(fo)
@@ -696,7 +710,7 @@ let
 	println(fo, "translational analysis ortho")
 
 	for state=1:Nstates
-		println(fo, real(e_ortho[state]-e_para[1])*eHtocm1)
+		println(fo, round(real(e_ortho[state]-e_para[1])*eHtocm1,digits=2))
 
 		for n=1:Ntrans
 			ov=0.0	
@@ -707,8 +721,8 @@ let
 				ov+=real(ev_t[it,n]*Wortho[k,state]*conj(ev_t[it,n]*Wortho[k,state]))
 			end
 			end
-			if ov>0.01
-				println(fo, n," ",e_t[n]*eHtocm1," ",ov)
+			if ov>0.02
+				println(fo, n," ",H3DList[n]," ",round(ov,digits=2))
 			end
 		end
 		println(fo)
@@ -723,28 +737,78 @@ let
 	
 	fp=open("energies_para.txt","a")
 	fo=open("energies_ortho.txt","a")
-	ftp=open("transitions_para.txt","w")
-	fto=open("transitions_ortho.txt","w")
-	for istates=1:Nsize_para
-		println(fp,round(real(e_para[istates])*eHtocm1,digits=18)," ",round(real(e_para[istates]-e_para[1])*eHtocm1,digits=16)," ",round(real(e_para[istates]-0.5*kconst*dCI*dCI)*eHtocm1,digits=18))
-		print(ftp,round(real(e_para[istates]-e_para[1])*eHtocm1,digits=2))
-		for jstates=(istates+1):Nsize_para
-			print(ftp," ",round(real(e_para[jstates]-e_para[istates])*eHtocm1,digits=2))
-		end
-		println(ftp," ")
+
+	for istates=1:Nstates
+		println(fp,round(real(e_para[istates])*eHtocm1,digits=5)," ",round(real(e_para[istates]-e_para[1])*eHtocm1,digits=5)," ",round(real(e_para[istates]-0.5*kconst*dCI*dCI)*eHtocm1,digits=5))
+
 	end
-	for istates=1:Nsize_ortho
-		println(fo,round(real(e_ortho[istates])*eHtocm1,digits=18)," ",round(real(e_ortho[istates]-e_para[1])*eHtocm1,digits=16)," ",round(real(e_ortho[istates]-0.5*kconst*dCI*dCI)*eHtocm1,digits=18))
-		print(fto,round(real(e_ortho[istates]-e_para[1])*eHtocm1,digits=2))
-		for jstates=(istates+1):Nsize_ortho
-			print(fto," ",round(real(e_ortho[jstates]-e_ortho[istates])*eHtocm1,digits=2))
-		end
-		println(fto," ")
+	for istates=1:Nstates
+		println(fo,round(real(e_ortho[istates])*eHtocm1,digits=5)," ",round(real(e_ortho[istates]-e_para[1])*eHtocm1,digits=5)," ",round(real(e_ortho[istates]-0.5*kconst*dCI*dCI)*eHtocm1,digits=5))
 	end
 
-	close(fp)
-	close(ftp)
 	close(fo)
+	close(fp)
+
+	spectrum=1
+
+	if spectrum==0
+
+		ftp=open("transitions_para.txt","w")
+		fto=open("transitions_ortho.txt","w")
+		for istates=1:Nstates
+			for jstates=(istates+1):Nstates
+				mu_element = zeros(ComplexF64,(3))
+				k=0
+				for it=1:Ntrans
+					for ir=1:Npara
+						k+=1
+						kp=0
+						for irp=1:Npara
+							for itp=1:Ntrans
+								kp+=1
+								for a=1:3
+									mu_element[a]+=conj(Wpara[k,istates])*mu_para[ir,irp,a]*Wpara[kp,jstates]
+								end
+							end
+						end
+					end
+				end
+				dipole_mag=0.0
+				for a=1:3
+					dipole_mag+=real(conj(mu_element[a])*mu_element[a])
+				end
+				println(ftp,round(real(e_para[istates]-e_para[1])*eHtocm1,digits=2)," ",round(real(e_para[jstates]-e_para[istates])*eHtocm1,digits=2)," ",dipole_mag)
+			end
+		end
+		for istates=1:Nstates
+			for jstates=(istates+1):Nstates
+			# dipole elementsk=0
+				mu_element = zeros(ComplexF64,(3))
+				k=0
+				for it=1:Ntrans
+					for ir=1:Northo
+						k+=1
+						kp=0
+						for itp=1:Ntrans
+							for irp=1:Northo
+								kp+=1
+								for a=1:3
+									mu_element[a]+=conj(Wortho[k,istates])*mu_ortho[ir,irp,a]*Wortho[kp,jstates]
+								end
+							end
+						end
+					end
+				end
+				dipole_mag=0.0
+				for a=1:3
+					dipole_mag+=real(conj(mu_element[a])*mu_element[a])
+				end
+				println(fto,round(real(e_ortho[istates]-e_para[1])*eHtocm1,digits=2)," ",round(real(e_ortho[jstates]-e_ortho[istates])*eHtocm1,digits=2)," ",dipole_mag)		
+			end
+		end
+		close(ftp)
+		close(fto)
+	end
 	
 	f=open("log","a")
 	println(f,"Calculate heat capacity")

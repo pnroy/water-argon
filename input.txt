@@ -2,9 +2,9 @@
 jmax=	3
 
 #Integration grid#
-Ntheta=	9
-Nphi=	9
-Nchi=	9	
+Ntheta=	11
+Nphi=	11
+Nchi=	11	
 
 #Rotational constants#
 Ae=	27.880692	#cm-1
@@ -12,16 +12,16 @@ Be=	14.5214713
 Ce=	9.27788726
 
 #Iso. 3D HO basis#
-nmax=	2
+nmax=	3
 mH=	1.007825	#amu
 mO=	15.994915
 k=	4.0	#J/m^2
 dCI=	10.0	#pm
 
 #Integration grid#
-NR=	9
-Ntheta=	9
-Nphi=	9
+NR=	11
+Ntheta=	11
+Nphi=	11
 
 #Equilibrium structure#
 rOH=	0.95801	#A
@@ -31,7 +31,7 @@ theta=	104.5	#degree
 isomer=	para
 
 #Number of states#
-Nstates=	32	#0=all possible states
+Nstates=	200	#0=all possible states
 
 #Temperature#
 Tstart=	0.1	#in K
@@ -39,10 +39,10 @@ dT=	0.1
 Ntemp=	300
 
 #SVD error#
-err=	1e-6
+err=	1e-4
 
-# vibrational state
+# vibrational state 1:(0,0,0) 2:(1,0,0) 3:(0,1,0) 4:(0,0,1)
 vib= 1
 
 # model 0: LO (Local Oscillator) or 1: AI (Ab initio)
-model= 1
+model= 0
