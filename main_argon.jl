@@ -749,7 +749,10 @@ let
 	close(fo)
 	close(fp)
 
-	spectrum=1
+	spectrum=0
+	Emax=60.0/eHtocm1
+	DeltaEmax=120.0/eHtocm1
+	
 
 	if spectrum==0
 
@@ -757,56 +760,63 @@ let
 		fto=open("transitions_ortho.txt","w")
 		for istates=1:Nstates
 			for jstates=(istates+1):Nstates
-				mu_element = zeros(ComplexF64,(3))
-				k=0
-				for it=1:Ntrans
-					for ir=1:Npara
-						k+=1
-						kp=0
-						for irp=1:Npara
-							for itp=1:Ntrans
-								kp+=1
-								for a=1:3
-									mu_element[a]+=conj(Wpara[k,istates])*mu_para[ir,irp,a]*Wpara[kp,jstates]
+				deltaE=real(e_para[jstates]-e_para[istates])
+				if real(e_para[istates]-e_para[1])<Emax && deltaE<DeltaEmax
+					mu_element = zeros(ComplexF64,(3))
+					k=0
+					for it=1:Ntrans
+						for ir=1:Npara
+							k+=1
+							kp=0
+							for irp=1:Npara
+								for itp=1:Ntrans
+									kp+=1
+									for a=1:3
+										mu_element[a]+=conj(Wpara[k,istates])*mu_para[ir,irp,a]*Wpara[kp,jstates]
+									end
 								end
 							end
 						end
 					end
-				end
-				dipole_mag=0.0
-				for a=1:3
-					dipole_mag+=real(conj(mu_element[a])*mu_element[a])
-				end
-				println(ftp,round(real(e_para[istates]-e_para[1])*eHtocm1,digits=2)," ",round(real(e_para[jstates]-e_para[istates])*eHtocm1,digits=2)," ",dipole_mag)
-			end
-		end
-		for istates=1:Nstates
-			for jstates=(istates+1):Nstates
-			# dipole elementsk=0
-				mu_element = zeros(ComplexF64,(3))
-				k=0
-				for it=1:Ntrans
-					for ir=1:Northo
-						k+=1
-						kp=0
-						for itp=1:Ntrans
-							for irp=1:Northo
-								kp+=1
-								for a=1:3
-									mu_element[a]+=conj(Wortho[k,istates])*mu_ortho[ir,irp,a]*Wortho[kp,jstates]
-								end
-							end
-						end
+					dipole_mag=0.0
+					for a=1:3
+						dipole_mag+=real(conj(mu_element[a])*mu_element[a])
 					end
+					println(ftp,round(real(e_para[istates]-e_para[1])*eHtocm1,digits=2)," ",round(deltaE*eHtocm1,digits=2)," ",dipole_mag)
 				end
-				dipole_mag=0.0
-				for a=1:3
-					dipole_mag+=real(conj(mu_element[a])*mu_element[a])
-				end
-				println(fto,round(real(e_ortho[istates]-e_para[1])*eHtocm1,digits=2)," ",round(real(e_ortho[jstates]-e_ortho[istates])*eHtocm1,digits=2)," ",dipole_mag)		
 			end
 		end
 		close(ftp)
+
+		for istates=1:Nstates
+			for jstates=(istates+1):Nstates
+				deltaE=real(e_ortho[jstates]-e_ortho[istates])
+				if real(e_ortho[istates]-e_para[1])<Emax && deltaE<DeltaEmax
+				# dipole elementsk=0
+					mu_element = zeros(ComplexF64,(3))
+					k=0
+					for it=1:Ntrans
+						for ir=1:Northo
+							k+=1
+							kp=0
+							for itp=1:Ntrans
+								for irp=1:Northo
+									kp+=1
+									for a=1:3
+										mu_element[a]+=conj(Wortho[k,istates])*mu_ortho[ir,irp,a]*Wortho[kp,jstates]
+									end
+								end
+							end
+						end
+					end
+					dipole_mag=0.0
+					for a=1:3
+						dipole_mag+=real(conj(mu_element[a])*mu_element[a])
+					end
+					println(fto,round(real(e_ortho[istates]-e_para[1])*eHtocm1,digits=2)," ",round(deltaE*eHtocm1,digits=2)," ",dipole_mag)		
+				end
+			end
+		end
 		close(fto)
 	end
 	

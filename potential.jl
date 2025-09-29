@@ -253,8 +253,8 @@ end
 ####################################################################################################
 coeff_start2=zeros(ComplexF64,Nrot)
 coeff_grid2=zeros(ComplexF64,Ngrid2)
-coeff_out2=zeros(ComplexF64,(6,Ngrid2))
-coeff_end2=zeros(ComplexF64,(6,Nrot))
+coeff_out2=zeros(ComplexF64,(Ngrid2))
+coeff_end2=zeros(ComplexF64,(Nrot))
 trig_matrix=zeros(ComplexF64,(6,Nrot,Nrot))
 
 #####################################################
@@ -264,31 +264,23 @@ trig_matrix=zeros(ComplexF64,(6,Nrot,Nrot))
 for ispec1=1:Nrot
 	coeff_start2.=0.0
 	coeff_start2[ispec1]=1.0	
-
 	#################################################
 	##Transformation from JKM basis to angular grid##
 	#################################################
-
 	coeff_grid2 = transformation_forward_Wigner(coeff_start2,jmax,mmax,kmax,Nalpha,Nm,Nk)
-
 	#######################################
 	##Act with trig operator on grid##
 	#######################################
 	for t=1:6
 		for i=1:Ngrid2
-			coeff_out2[t,i]=coeff_grid2[i]*trig_func[t,i]
+			coeff_out2[i]=coeff_grid2[i]*trig_func[t,i]
 		end
-	end
-	#################################################
-	##Transformation from angular grid to JMK basis##
-	#################################################
-	for t=1:6
-		coeff_end2[t,:] .= transformation_backward_Wigner(coeff_out2[t,:],jmax,mmax,kmax,Nalpha,Nm,Nk,Nrot)
-	end
-
-	for t=1:6
+		#################################################
+		##Transformation from angular grid to JMK basis##
+		#################################################
+		coeff_end2 .= transformation_backward_Wigner(coeff_out2,jmax,mmax,kmax,Nalpha,Nm,Nk,Nrot)
 		for ispec2=1:Nrot
-			trig_matrix[t,ispec2,ispec1]=coeff_end2[t,ispec2]
+			trig_matrix[t,ispec2,ispec1]=coeff_end2[ispec2]
 		end
 	end
 end
