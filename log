@@ -10,21 +10,21 @@ Dimension of ortho Hilbert space: 44
 #Translation#
 nmax= 3, lmax= 3, mmax= 3
 NR= 11, Ntheta= 11, Nphi= 11
-mass= 18.010565 omega= 0.000279741486857207
+mass= 18.010565 omega= 0.0001398707434286035
 Dimension of local Hilbert space: 20
 #######################################
 #####Rotational constants in cm^-1#####
 #######################################
-Ae= 27.880691999999996, Be= 14.521471299999998, Ce= 9.27788726
+Ae= 27.8806, Be= 14.5216, Ce= 9.2778
 #######################################
 
 Calculate cage potential matrix
 ##Decompose cage potential on grid by SVD##
-Number of products: 4
+Number of products: 154
 Chosen SV error: 0.0001
-Sum of first Nprod SV: 0.9999999999997596
-Frobenius norm = 1.5782707018501425e-14
-Fnorm divided by matrix size= 8.908926657620835e-21
+Sum of first Nprod SV: 0.9999003781689516
+Frobenius norm = 0.00046579547928359585
+Fnorm divided by matrix size= 2.629294047924942e-10
 
 Cage potential matrix done
 Start diagonalization

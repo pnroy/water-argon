@@ -759,7 +759,7 @@ let
 		ftp=open("transitions_para.txt","w")
 		fto=open("transitions_ortho.txt","w")
 		for istates=1:Nstates
-			for jstates=(istates+1):Nstates
+			for jstates=(istates):Nstates
 				deltaE=real(e_para[jstates]-e_para[istates])
 				if real(e_para[istates]-e_para[1])<Emax && deltaE<DeltaEmax
 					mu_element = zeros(ComplexF64,(3))
@@ -771,9 +771,11 @@ let
 							for irp=1:Npara
 								for itp=1:Ntrans
 									kp+=1
-									for a=1:3
-										mu_element[a]+=conj(Wpara[k,istates])*mu_para[ir,irp,a]*Wpara[kp,jstates]
-									end
+									if it==itp
+										for a=1:3
+											mu_element[a]+=conj(Wpara[k,istates])*mu_para[ir,irp,a]*Wpara[kp,jstates]
+										end
+									 end
 								end
 							end
 						end
@@ -789,7 +791,7 @@ let
 		close(ftp)
 
 		for istates=1:Nstates
-			for jstates=(istates+1):Nstates
+			for jstates=(istates):Nstates
 				deltaE=real(e_ortho[jstates]-e_ortho[istates])
 				if real(e_ortho[istates]-e_para[1])<Emax && deltaE<DeltaEmax
 				# dipole elementsk=0
@@ -802,8 +804,10 @@ let
 							for itp=1:Ntrans
 								for irp=1:Northo
 									kp+=1
-									for a=1:3
-										mu_element[a]+=conj(Wortho[k,istates])*mu_ortho[ir,irp,a]*Wortho[kp,jstates]
+									if it==itp
+										for a=1:3
+											mu_element[a]+=conj(Wortho[k,istates])*mu_ortho[ir,irp,a]*Wortho[kp,jstates]
+										end
 									end
 								end
 							end

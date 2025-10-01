@@ -45,4 +45,4 @@ err=	1e-4
 vib= 1
 
 # model 0: LO (Local Oscillator) or 1: AI (Ab initio)
-model= 0
+model= 1
