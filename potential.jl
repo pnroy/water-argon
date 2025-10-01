@@ -12,7 +12,7 @@ push!(LOAD_PATH,pwd())
 using h2o_Argon
 using h2o_lo
 
-export trigo_euler_matrix,potential_matrix,wigner_dmatrix,Urn,transformation_forward_Wigner,transformation_backward_Wigner,change_rep,transformation_forward_Wigner_shift,wigner_dmatrix_Ir_IIl
+export dipole_basis,trigo_euler_matrix,potential_matrix,wigner_dmatrix,Urn,transformation_forward_Wigner,transformation_backward_Wigner,change_rep,transformation_forward_Wigner_shift,wigner_dmatrix_Ir_IIl
 
 ###############################################################################################################
 
@@ -253,9 +253,77 @@ end
 ####################################################################################################
 coeff_start2=zeros(ComplexF64,Nrot)
 coeff_grid2=zeros(ComplexF64,Ngrid2)
-coeff_out2=zeros(ComplexF64,(6,Ngrid2))
-coeff_end2=zeros(ComplexF64,(6,Nrot))
+coeff_out2=zeros(ComplexF64,(Ngrid2))
+coeff_end2=zeros(ComplexF64,(Nrot))
 trig_matrix=zeros(ComplexF64,(6,Nrot,Nrot))
+
+#####################################################
+##Calculation of potential matrices in Wigner basis##
+#####################################################
+
+for ispec1=1:Nrot
+	coeff_start2.=0.0
+	coeff_start2[ispec1]=1.0	
+	#################################################
+	##Transformation from JKM basis to angular grid##
+	#################################################
+	coeff_grid2 = transformation_forward_Wigner(coeff_start2,jmax,mmax,kmax,Nalpha,Nm,Nk)
+	#######################################
+	##Act with trig operator on grid##
+	#######################################
+	for t=1:6
+		for i=1:Ngrid2
+			coeff_out2[i]=coeff_grid2[i]*trig_func[t,i]
+		end
+		#################################################
+		##Transformation from angular grid to JMK basis##
+		#################################################
+		coeff_end2 .= transformation_backward_Wigner(coeff_out2,jmax,mmax,kmax,Nalpha,Nm,Nk,Nrot)
+		for ispec2=1:Nrot
+			trig_matrix[t,ispec2,ispec1]=coeff_end2[ispec2]
+		end
+	end
+end
+
+return trig_matrix
+end
+
+function dipole_basis(jmax,Nalpha,Nm,Nk,Nrot)
+
+mmax=jmax
+kmax=jmax
+
+#Grids#
+Ngrid2 = Nalpha*Nm*Nk
+ctheta2, ct_weight2 = legendre(Nalpha)
+phi2=zeros(Nm)
+for i=1:Nm
+	phi2[i]=(i-1)*2.0*pi/Nm
+end
+chi=zeros(Nk)
+for i=1:Nk
+	chi[i]=(i-1)*2.0*pi/Nk
+end
+#Write potential on grid#
+trig_func = zeros(Ngrid2)
+
+i2=0
+for it2=1:Nalpha
+	for ip2=1:Nm
+		for ic=1:Nk 
+			i2 += 1
+			#cθ
+			trig_func[i2]=ctheta2[it2]
+		end
+	end
+end
+
+####################################################################################################
+coeff_start2=zeros(ComplexF64,Nrot)
+coeff_grid2=zeros(ComplexF64,Ngrid2)
+coeff_out2=zeros(ComplexF64,(Ngrid2))
+coeff_end2=zeros(ComplexF64,(Nrot))
+trig_matrix=zeros(ComplexF64,(Nrot,Nrot))
 
 #####################################################
 ##Calculation of potential matrices in Wigner basis##
@@ -274,28 +342,21 @@ for ispec1=1:Nrot
 	#######################################
 	##Act with trig operator on grid##
 	#######################################
-	for t=1:6
 		for i=1:Ngrid2
-			coeff_out2[t,i]=coeff_grid2[i]*trig_func[t,i]
+			coeff_out2[i]=coeff_grid2[i]*trig_func[i]
 		end
-	end
 	#################################################
 	##Transformation from angular grid to JMK basis##
 	#################################################
-	for t=1:6
-		coeff_end2[t,:] .= transformation_backward_Wigner(coeff_out2[t,:],jmax,mmax,kmax,Nalpha,Nm,Nk,Nrot)
-	end
+	coeff_end2 = transformation_backward_Wigner(coeff_out2,jmax,mmax,kmax,Nalpha,Nm,Nk,Nrot)
 
-	for t=1:6
 		for ispec2=1:Nrot
-			trig_matrix[t,ispec2,ispec1]=coeff_end2[t,ispec2]
+			trig_matrix[ispec2,ispec1]=coeff_end2[ispec2]
 		end
-	end
 end
 
 return trig_matrix
 end
-
 ####################################################################################################################
 function transformation_forward_HO(coeff_in,nmax,NR,Ntheta,Nphi,nu,mass)
 ####################################################################################################################
