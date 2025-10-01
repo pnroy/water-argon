@@ -741,7 +741,7 @@ let
 	
 	fp=open(path*"energies_para.txt","a")
 	fo=open(path*"energies_ortho.txt","a")
-	for istates=1:Nsize_para
+	for istates=1:Nstates
 		println(fp,round(real(e_para[istates])*eHtocm1,digits=18)," ",round(real(e_para[istates]-e_para[1])*eHtocm1,digits=16)," ",round(real(e_para[istates]-0.5*kconst*dCI*dCI)*eHtocm1,digits=18))
 	end
 	for istates=1:Nstates
@@ -752,7 +752,7 @@ let
 	close(fp)
 
 	spectrum=0
-	Emax=60.0/eHtocm1
+	Emax=80.0/eHtocm1
 	DeltaEmax=120.0/eHtocm1
 	
 

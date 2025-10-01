@@ -1,5 +1,5 @@
 #Wigner basis#
-jmax=	6
+jmax=	3
 
 #Integration grid#
 Ntheta=	11
@@ -12,11 +12,7 @@ Be=	14.5214713
 Ce=	9.27788726
 
 #Iso. 3D HO basis#
-<<<<<<< HEAD
-nmax=	7
-=======
 nmax=	3
->>>>>>> a07a1f48ca08d51ed455171fde7a9afe40f58995
 mH=	1.007825	#amu
 mO=	15.994915
 k=	4.0	#J/m^2
@@ -49,4 +45,4 @@ err=	1e-4
 vib= 1
 
 # model 0: LO (Local Oscillator) or 1: AI (Ab initio)
-model= 1
+model= 0
