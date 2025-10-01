@@ -750,7 +750,6 @@ let
 
 	close(fo)
 	close(fp)
-<<<<<<< HEAD
 
 	spectrum=0
 	Emax=60.0/eHtocm1
@@ -826,9 +825,6 @@ let
 		end
 		close(fto)
 	end
-=======
-	close(fo)
->>>>>>> 51425cffc8f95ef11673f5ba8c381b599d23c175
 	
 	f=open(path*"log","a")
 	println(f,"Calculate heat capacity")
