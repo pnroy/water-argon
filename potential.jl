@@ -50,7 +50,7 @@ return rot_matrix
 end
 ###############################################################################################################
 
-function potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,error,dCI,kconst,vib_state,model)
+function potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,error,dCI,kconst,vib_state,model, path)
 #function potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,error,dCI,kconst)
 
 mmax=jmax
@@ -109,10 +109,10 @@ end
 #############SVD Approach#############
 ######################################
 
-log_file=open("log","a")
+log_file=open(path*"log","a")
 println(log_file,"##Decompose cage potential on grid by SVD##")
 close(log_file)
-C,Vtrans,Vrot = decomposition(Vpot,error)
+C,Vtrans,Vrot = decomposition(Vpot,error, path)
 Nprod = length(C)
 
 ####################################################################################################
@@ -1049,7 +1049,7 @@ function wigner_dmatrix_Ir_IIl(j,kIr,kIIl)
 	return djmk
 	end
 ###############################################################################################################
-function decomposition(matrix,error)
+function decomposition(matrix,error, path)
 
 Ngrid1 = size(matrix,1)
 Ngrid2 = size(matrix,2)
@@ -1066,7 +1066,7 @@ while e <1.0-error
 	Nprod+=1
 	e=e+values[Nprod]
 end
-log_file=open("log","a")
+log_file=open(path*"log","a")
 println(log_file,"Number of products: ",Nprod)
 println(log_file,"Chosen SV error: ",error)
 println(log_file,"Sum of first Nprod SV: ",e)

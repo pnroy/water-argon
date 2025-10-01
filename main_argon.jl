@@ -381,7 +381,7 @@ Tparatest_tmp=T_half_t*Trot
 
 Tparatest=Tparatest_tmp*T_half
 
-println()
+
 
 #show(Tparatest-Tpara)
 #exit()
@@ -405,7 +405,10 @@ Utrans_trans = trans_realSPH(nmax,Ntrans)
 Ttrans_real = real(transform_realbasis(Utrans_trans,Ttrans))
 H3D_real = real(transform_realbasis(Utrans_trans,H3D))
 
-f=open("log","w")
+path = "./JMax_$jmax"*"_NMax_$nmax/"
+mkpath("./JMax_$jmax"*"_NMax_$nmax")
+
+f=open(path*"log","w")
 println(f,"#######################################")
 println(f,"###########Basis information###########")
 println(f,"#######################################")
@@ -430,7 +433,7 @@ println(f,"Calculate cage potential matrix")
 close(f)
 
 #Calculate cage potential in product basis#
-Cpot,Vtrans_matrix,Vrot_matrix = potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,svd_err,dCI,kconst,vib_state,model)
+Cpot,Vtrans_matrix,Vrot_matrix = potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,svd_err,dCI,kconst,vib_state,model, path)
 #Cpot,Vtrans_matrix,Vrot_matrix = potential_matrix(nmax,NR,Ntheta,Nphi,jmax,Nalpha,Nm,Nk,omega,mass,Ntrans,Nrot,eq_struct,svd_err,dCI,kconst,vib_state,model)
 trig_matrix=trigo_euler_matrix(jmax,Nalpha,Nm,Nk,Nrot)
 #dipole_matrix=dipole_basis(jmax,Nalpha,Nm,Nk,Nrot)
@@ -449,7 +452,7 @@ trig_matrix=trigo_euler_matrix(jmax,Nalpha,Nm,Nk,Nrot)
 # hsr6=matrix_prod_AB(trig_matrix[6,:,:],Jz)
 
 Nprod=size(Vtrans_matrix,3)
-f=open("log","a")
+f=open(path*"log","a")
 println(f,"Cage potential matrix done")
 close(f)
 
@@ -510,7 +513,7 @@ for m=-1:1
 	Y[:,:,2+m] = transform_realbasis(Utrans_trans,Y1m[:,:,2+m])
 end
 
-f=open("energies_para.txt","w")
+f=open(path*"energies_para.txt","w")
 println(f,"#nmax= ",nmax," NR= ",NR," Ntheta= ",Ntheta," Nphi= ",Nphi)
 println(f,"#jmax= ",jmax," Nalpha= ",Nalpha," Nphi= ",Nm," Nchi= ",Nk)
 println(f,"#Ntrans= ",Ntrans)
@@ -518,7 +521,7 @@ println(f,"#Nrot= ",Npara)
 println(f)
 close(f)
 
-f=open("energies_ortho.txt","w")
+f=open(path*"energies_ortho.txt","w")
 println(f,"#nmax= ",nmax," NR= ",NR," Ntheta= ",Ntheta," Nphi= ",Nphi)
 println(f,"#jmax= ",jmax," Nalpha= ",Nalpha," Nphi= ",Nm," Nchi= ",Nk)
 println(f,"#Ntrans= ",Ntrans)
@@ -526,7 +529,7 @@ println(f,"#Nrot= ",Northo)
 println(f)
 close(f)
 
-f=open("heat_capacity.txt","w")
+f=open(path*"heat_capacity.txt","w")
 println(f,"#nmax= ",nmax," NR= ",NR," Ntheta= ",Ntheta," Nphi= ",Nphi)
 println(f,"#jmax= ",jmax," Nalpha= ",Nalpha," Nphi= ",Nm," Nchi= ",Nk)
 println(f,"#Ntrans= ",Ntrans)
@@ -541,7 +544,7 @@ close(f)
 I2m=A*[im,im-1.0,0,im+1,-im]
 let
 
-	f=open("log","a")
+	f=open(path*"log","a")
 	println(f,"Start diagonalization")
 
 	println(f,"Para isomer:")
@@ -579,10 +582,13 @@ let
 	#reduced density matrices
 
 	#rotational analysis
-	fp = open("wavefunction_para.txt", "w")
-	println(fp, "rotational analysis para")
+	f = open(path*"rotational_wavefunction_para.txt", "w")
+	println(f, "rotational analysis para")
+	println(f,"#nmax= ",nmax," NR= ",NR," Ntheta= ",Ntheta," Nphi= ",Nphi)
+	println(f,"#jmax= ",jmax," Nalpha= ",Nalpha," Nphi= ",Nm," Nchi= ",Nk)
+
 	for state=1:Nstates
-		println(fp, round(real(e_para[state]-e_para[1])*eHtocm1,digits=2))
+		println(f, real(e_para[state]-e_para[1])*eHtocm1)
 
 		for n=1:Nrot
 			ov=0.0	
@@ -593,30 +599,22 @@ let
 				ov+=real(ev_Tpara_spin[ir,n]*Wpara[k,state]*conj(ev_Tpara_spin[ir,n]*Wpara[k,state]))
 			end
 			end
-			if ov>0.02
-				println(fp, n," ",round(e_Tpara_spin[n]*eHtocm1,digits=2)," ",round(ov,digits=2))
+			if ov>0.01
+				println(f, n," ",e_Tpara_spin[n]*eHtocm1," ",ov)
 			end
 		end
-		println(fp)
+		println(f)
 	end
+	close(f)
 	#translational analysis
 	e_t,ev_t=eigen(H3D_real)
-	# create list of
-	H3DList=[]
-	for n1=0:nmax
-	for l1=n1:-2:0
-	for m1=-l1:l1
-	k1 = Int((n1-l1)/2)
-		push!(H3DList,(n1,l1))
-	end
-	end
-	end
-
-
-	println(fp, "translational analysis para")
+	f = open(path*"translational_wavefunction_para.txt", "w")
+	println(f, "translational analysis para")
+	println(f,"#nmax= ",nmax," NR= ",NR," Ntheta= ",Ntheta," Nphi= ",Nphi)
+	println(f,"#jmax= ",jmax," Nalpha= ",Nalpha," Nphi= ",Nm," Nchi= ",Nk)
 
 	for state=1:Nstates
-		println(fp, round(real(e_para[state]-e_para[1])*eHtocm1,digits=2))
+		println(f, real(e_para[state]-e_para[1])*eHtocm1)
 
 		for n=1:Ntrans
 			ov=0.0	
@@ -627,13 +625,13 @@ let
 				ov+=real(ev_t[it,n]*Wpara[k,state]*conj(ev_t[it,n]*Wpara[k,state]))
 			end
 			end
-			if ov>0.02
-				println(fp, n," ",H3DList[n]," ",round(ov,digits=2))
+			if ov>0.01
+				println(f, n," ",e_t[n]*eHtocm1," ",ov)
 			end
 		end
-		println(fp)
+		println(f)
 	end
-	close(fp)
+	close(f)
 	# explicit diag
 	#Nsize_para=Ntrans*Nrot
 	# Hexp= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
@@ -655,7 +653,7 @@ let
 	# 	println(real(eye*eHtocm1))
 	# end
 	
-	f=open("log","a")
+	f=open(path*"log","a")
 	println(f,"Ortho isomer:")
 	close(f) 
 
@@ -685,10 +683,12 @@ let
 	e_ortho,Wortho = Arpack.eigs(D,nev=Nstates,which=:SR)
 
 	#rotational analysis
-	fo = open("wavefunction_ortho.txt", "w")
-	println(fo, "rotational analysis ortho")
+	f = open(path*"rotational_wavefunction_ortho.txt", "w")
+	println(f, "rotational analysis ortho")
+	println(f,"#nmax= ",nmax," NR= ",NR," Ntheta= ",Ntheta," Nphi= ",Nphi)
+	println(f,"#jmax= ",jmax," Nalpha= ",Nalpha," Nphi= ",Nm," Nchi= ",Nk)
 	for state=1:Nstates
-		println(fo, round(real(e_ortho[state]-e_para[1])*eHtocm1,digits=2))
+		println(f, real(e_ortho[state]-e_para[1])*eHtocm1)
 
 		for n=1:Nrot
 			ov=0.0	
@@ -699,18 +699,22 @@ let
 				ov+=real(ev_Tortho_spin[ir,n]*Wortho[k,state]*conj(ev_Tortho_spin[ir,n]*Wortho[k,state]))
 			end
 			end
-			if ov>0.02
-				println(fo, n," ",round(e_Tortho_spin[n]*eHtocm1,digits=2)," ",round(ov,digits=2))
+			if ov>0.01
+				println(f, n," ",e_Tortho_spin[n]*eHtocm1," ",ov)
 			end
 		end
-		println(fo)
+		println(f)
 	end
+	close(f)
 	#translational analysis
 	e_t,ev_t=eigen(H3D_real)
-	println(fo, "translational analysis ortho")
+	f = open(path*"translational_wavefunction_ortho.txt", "w")
+	println(f, "translational analysis ortho")
+	println(f,"#nmax= ",nmax," NR= ",NR," Ntheta= ",Ntheta," Nphi= ",Nphi)
+	println(f,"#jmax= ",jmax," Nalpha= ",Nalpha," Nphi= ",Nm," Nchi= ",Nk)
 
 	for state=1:Nstates
-		println(fo, round(real(e_ortho[state]-e_para[1])*eHtocm1,digits=2))
+		println(f, real(e_ortho[state]-e_para[1])*eHtocm1)
 
 		for n=1:Ntrans
 			ov=0.0	
@@ -721,26 +725,24 @@ let
 				ov+=real(ev_t[it,n]*Wortho[k,state]*conj(ev_t[it,n]*Wortho[k,state]))
 			end
 			end
-			if ov>0.02
-				println(fo, n," ",H3DList[n]," ",round(ov,digits=2))
+			if ov>0.01
+				println(f, n," ",e_t[n]*eHtocm1," ",ov)
 			end
 		end
-		println(fo)
+		println(f)
 	end
-	close(fo)
+	close(f)
 
 
-	f=open("log","a")
+	f=open(path*"log","a")
 	println(f,"Write eigenvalues")
 	println(f)
 	close(f)
 	
-	fp=open("energies_para.txt","a")
-	fo=open("energies_ortho.txt","a")
-
-	for istates=1:Nstates
-		println(fp,round(real(e_para[istates])*eHtocm1,digits=5)," ",round(real(e_para[istates]-e_para[1])*eHtocm1,digits=5)," ",round(real(e_para[istates]-0.5*kconst*dCI*dCI)*eHtocm1,digits=5))
-
+	fp=open(path*"energies_para.txt","a")
+	fo=open(path*"energies_ortho.txt","a")
+	for istates=1:Nsize_para
+		println(fp,round(real(e_para[istates])*eHtocm1,digits=18)," ",round(real(e_para[istates]-e_para[1])*eHtocm1,digits=16)," ",round(real(e_para[istates]-0.5*kconst*dCI*dCI)*eHtocm1,digits=18))
 	end
 	for istates=1:Nstates
 		println(fo,round(real(e_ortho[istates])*eHtocm1,digits=5)," ",round(real(e_ortho[istates]-e_para[1])*eHtocm1,digits=5)," ",round(real(e_ortho[istates]-0.5*kconst*dCI*dCI)*eHtocm1,digits=5))
@@ -748,6 +750,7 @@ let
 
 	close(fo)
 	close(fp)
+<<<<<<< HEAD
 
 	spectrum=0
 	Emax=60.0/eHtocm1
@@ -823,10 +826,13 @@ let
 		end
 		close(fto)
 	end
+=======
+	close(fo)
+>>>>>>> 51425cffc8f95ef11673f5ba8c381b599d23c175
 	
-	f=open("log","a")
+	f=open(path*"log","a")
 	println(f,"Calculate heat capacity")
-	f3=open("heat_capacity.txt","a")
+	f3=open(path*"heat_capacity.txt","a")
 	for it=1:Ntemp
 		cv_p,cv_o,cv_full=heat_capacity(real(e_para),real(e_ortho),Tstart+(it-1)*dT)
 		println(f3,round(Tstart+(it-1)*dT,digits=3),"  ",cv_p*eHtocm1,"  ",cv_o*eHtocm1,"  ",cv_full*eHtocm1)
