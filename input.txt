@@ -1,5 +1,5 @@
 #Wigner basis#
-jmax=	3
+jmax=	6
 
 #Integration grid#
 Ntheta=	21
@@ -12,7 +12,7 @@ Be=	14.5214713
 Ce=	9.27788726
 
 #Iso. 3D HO basis#
-nmax=	2
+nmax=	7
 mH=	1.007825	#amu
 mO=	15.994915
 k=	4.0	#J/m^2
