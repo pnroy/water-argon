@@ -53,7 +53,7 @@ for i=1:Ncage
 	Rot=rotation_matrix(theta2,phi2,chi)
 	rAr_BFF=BLAS.gemv('T' , 1.0, Rot, rAr_COM)
 	theta_BFF=acos(rAr_BFF[3]/dist)
-	# atan2 below
+	# atan2 below  
 	phi_BFF=atan(rAr_BFF[2],rAr_BFF[1])
 
 #  iv=1 for (v1,v2,v3)=(0,0,0); 

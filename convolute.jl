@@ -5,7 +5,7 @@ lines_ortho = readlines(f_ortho)
 close(f_para)
 close(f_ortho)
 
-fwhm=0.2
+fwhm=.5
 
 Nw=1000
 wmax=135
@@ -33,7 +33,7 @@ for line in lines_para
         #boltz=exp(-(E0)/kBT)
         boltz=exp(-(E0)/kBT)-exp(-(E0+w0)/kBT)
         #Iw[i]+=intensity*1.0/(1.0+x*x)*boltz
-        Iw[i]+=w*w*intensity*1.0/(1.0+x*x)*boltz
+        Iw[i]+=w*intensity*1.0/(1.0+x*x)*boltz
     end
 end
 
@@ -56,7 +56,7 @@ for line in lines_ortho
         #boltz=exp(-(E0)/kBT)
         boltz=exp(-(E0)/kBT)-exp(-(E0+w0)/kBT)
         #Iw[i]+=intensity*1.0/(1.0+x*x)*boltz*3
-        Iw[i]+=w*w*intensity*1.0/(1.0+x*x)*boltz*3
+        Iw[i]+=w*intensity*1.0/(1.0+x*x)*boltz*3
     end
 end
 for i=1:Nw

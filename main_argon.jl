@@ -288,11 +288,11 @@ end
 if model_flag==1
 	model="AI"
 	Ae = 27.8806/eHtocm1;Be = 14.5216/eHtocm1;Ce=9.2778/eHtocm1
-	kconst=(1.0/eHtoJ)*(a0tom^2)
+	kconst=(2.0/eHtoJ)*(a0tom^2)
 	omega=sqrt(kconst/mass)
 	nu=mass*omega*0.5
 	if vib_state==4
-			Ae = 26.6303/eHtocm1;Be = 14.4225/eHtocm1;Ce=9.1418/eHtocm1
+		Ae = 26.6303/eHtocm1;Be = 14.4225/eHtocm1;Ce=9.1418/eHtocm1
 	end
 end
 
@@ -752,14 +752,14 @@ let
 	close(fp)
 
 	spectrum=0
-	Emax=80.0/eHtocm1
-	DeltaEmax=120.0/eHtocm1
+	Emax=100.0/eHtocm1
+	DeltaEmax=220.0/eHtocm1
 	
 
 	if spectrum==0
 
-		ftp=open("transitions_para.txt","w")
-		fto=open("transitions_ortho.txt","w")
+		ftp=open(path*"transitions_para.txt","w")
+		fto=open(path*"transitions_ortho.txt","w")
 		for istates=1:Nstates
 			for jstates=(istates):Nstates
 				deltaE=real(e_para[jstates]-e_para[istates])

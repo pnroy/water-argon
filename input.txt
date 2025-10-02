@@ -1,5 +1,5 @@
 #Wigner basis#
-jmax=	3
+jmax=	1
 
 #Integration grid#
 Ntheta=	11
@@ -12,7 +12,7 @@ Be=	14.5214713
 Ce=	9.27788726
 
 #Iso. 3D HO basis#
-nmax=	3
+nmax=	4
 mH=	1.007825	#amu
 mO=	15.994915
 k=	4.0	#J/m^2
@@ -31,7 +31,7 @@ theta=	104.5	#degree
 isomer=	para
 
 #Number of states#
-Nstates=	200	#0=all possible states
+Nstates=	100	#0=all possible states
 
 #Temperature#
 Tstart=	0.1	#in K
@@ -45,4 +45,4 @@ err=	1e-4
 vib= 1
 
 # model 0: LO (Local Oscillator) or 1: AI (Ab initio)
-model= 0
+model= 1
