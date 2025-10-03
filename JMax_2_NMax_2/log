@@ -20,11 +20,11 @@ Ae= 27.880691999999996, Be= 14.521471299999998, Ce= 9.27788726
 
 Calculate cage potential matrix
 ##Decompose cage potential on grid by SVD##
-Number of products: 1
+Number of products: 4
 Chosen SV error: 0.0001
-Sum of first Nprod SV: 0.9999999999989461
-Frobenius norm = 9.412794778483938e-14
-Fnorm divided by matrix size= 5.313277261400504e-20
+Sum of first Nprod SV: 0.9999999999997596
+Frobenius norm = 1.5782707018501425e-14
+Fnorm divided by matrix size= 8.908926657620835e-21
 
 Cage potential matrix done
 Start diagonalization
