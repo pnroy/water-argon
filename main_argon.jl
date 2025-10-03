@@ -770,12 +770,12 @@ let
 						for ir=1:Npara
 							k+=1
 							kp=0
-							for irp=1:Npara
-								for itp=1:Ntrans
+							for itp=1:Ntrans
+								for irp=1:Npara
 									kp+=1
 									if it==itp
 										for a=1:3
-											mu_element[a]+=conj(Wpara[k,istates])*mu_para[ir,irp,a]*Wpara[kp,jstates]
+											mu_element[a]+=conj(Wpara[k,jstates])*mu_para[ir,irp,a]*Wpara[kp,istates]
 										end
 									 end
 								end
