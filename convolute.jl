@@ -5,7 +5,7 @@ lines_ortho = readlines(f_ortho)
 close(f_para)
 close(f_ortho)
 
-fwhm=.5
+fwhm=0.1
 
 Nw=1000
 wmax=135
@@ -23,9 +23,9 @@ kBT=kB_cm*Temperature
 
 for line in lines_para
     lsplit=split(line)
-    E0=parse(Float64,lsplit[1])
-    w0=parse(Float64,lsplit[2])
-    intensity=parse(Float64,lsplit[3])
+    E0=parse(Float64,lsplit[2])
+    w0=parse(Float64,lsplit[4])
+    intensity=parse(Float64,lsplit[5])
     #println(deltaw," ",intensity)
     for i=1:Nw
         w=wmin+(i-1)*dw
@@ -42,12 +42,12 @@ gs_ortho=0.
 for line in lines_ortho
     global count+=1
     lsplit=split(line)
-    E0=parse(Float64,lsplit[1])
+    E0=parse(Float64,lsplit[2])
     if count ==1
         global gs_ortho=E0
     end
-    w0=parse(Float64,lsplit[2])
-    intensity=parse(Float64,lsplit[3])
+    w0=parse(Float64,lsplit[4])
+    intensity=parse(Float64,lsplit[5])
     #println(w0," ",intensity)
     for i=1:Nw
         w=wmin+(i-1)*dw

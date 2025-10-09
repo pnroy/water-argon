@@ -2,16 +2,16 @@
 ###########Basis information###########
 #######################################
 #Rotation#
-jmax= 3, mmax= 3, kmax= 3
+jmax= 4, mmax= 4, kmax= 4
 Ntheta= 11, Nphi= 11, Nchi= 11
-Dimension of local Hilbert space: 84
-Dimension of para Hilbert space: 40
-Dimension of ortho Hilbert space: 44
+Dimension of local Hilbert space: 165
+Dimension of para Hilbert space: 85
+Dimension of ortho Hilbert space: 80
 #Translation#
-nmax= 3, lmax= 3, mmax= 3
+nmax= 4, lmax= 4, mmax= 4
 NR= 11, Ntheta= 11, Nphi= 11
 mass= 18.010565 omega= 0.000279741486857207
-Dimension of local Hilbert space: 20
+Dimension of local Hilbert space: 35
 #######################################
 #####Rotational constants in cm^-1#####
 #######################################

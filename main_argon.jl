@@ -786,7 +786,7 @@ let
 					for a=1:3
 						dipole_mag+=real(conj(mu_element[a])*mu_element[a])
 					end
-					println(ftp,round(real(e_para[istates]-e_para[1])*eHtocm1,digits=2)," ",round(deltaE*eHtocm1,digits=2)," ",dipole_mag)
+					println(ftp,istates," ",round(real(e_para[istates]-e_para[1])*eHtocm1,digits=2)," ",jstates,"  ",round(deltaE*eHtocm1,digits=2)," ",dipole_mag)
 				end
 			end
 		end
@@ -819,7 +819,7 @@ let
 					for a=1:3
 						dipole_mag+=real(conj(mu_element[a])*mu_element[a])
 					end
-					println(fto,round(real(e_ortho[istates]-e_para[1])*eHtocm1,digits=2)," ",round(deltaE*eHtocm1,digits=2)," ",dipole_mag)		
+					println(fto,istates," ",round(real(e_ortho[istates]-e_para[1])*eHtocm1,digits=2)," ",jstates," ",round(deltaE*eHtocm1,digits=2)," ",dipole_mag)		
 				end
 			end
 		end
