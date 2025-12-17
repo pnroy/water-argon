@@ -701,103 +701,94 @@ let
 		println(f)
 	end
 	close(f)
-	# explicit diag
-	Nsize_para=Ntrans*Nrot
-	Hexp= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
-	v=zeros(ComplexF64,Ntrans*Nrot)
-	u=zeros(ComplexF64,Ntrans*Nrot)
-	w=zeros(ComplexF64,Ntrans*Nrot)
-	for eye=1:Ntrans*Nrot
-		u[eye]=1.0+0.0im
-		for jay=1:Ntrans*Nrot
-			v[jay]=1.0+0.0im
-			Hexp[eye,jay]=dot(conj(u),Hv!(w,v))*(1.0+0.0000000001*(rand()-0.5))
-			v[jay]=0.0+0.0im
+	testQN=1
+	if testQn==0
+		# explicit diag
+		Nsize_para=Ntrans*Nrot
+		Hexp= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
+		v=zeros(ComplexF64,Ntrans*Nrot)
+		u=zeros(ComplexF64,Ntrans*Nrot)
+		w=zeros(ComplexF64,Ntrans*Nrot)
+		for eye=1:Ntrans*Nrot
+			u[eye]=1.0+0.0im
+			for jay=1:Ntrans*Nrot
+				v[jay]=1.0+0.0im
+				Hexp[eye,jay]=dot(conj(u),Hv!(w,v))*(1.0+0.000001*(rand()-0.5))
+				v[jay]=0.0+0.0im
+			end
+			u[eye]=0.0+0.0im
 		end
-		u[eye]=0.0+0.0im
-	end
-
-# 	AB= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
-# 	BA= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
-
-# 	#mul!(AB,JZ_plus_LZ,Hexp)
-# 	#mul!(BA,Hexp,JZ_plus_LZ)
-# 	mul!(AB,JZ_mat+LZ_mat,Hexp)
-# 	mul!(BA,Hexp,JZ_mat+LZ_mat)
-# 	#mul!(AB,Hexp,Trot_test)
-# 	#mul!(BA,Trot_test,Hexp)
-# 	C=AB-BA
-
-# 	sum=0.0
-# 	for eye=1:Ntrans*Nrot
-# 		for jay=1:Ntrans*Nrot
-# 			mag=abs(C[eye,jay])
-# 			sum+=mag
-# #			if mag>1e-10
-# #				println(mag)
-# #			end
-# 		end
-# 	end
-# 	println("para [JZ+LZ,H] = ",sum)
-
-# 	mul!(AB,JZ_mat,Hexp)
-# 	mul!(BA,Hexp,JZ_mat)
-# 	#mul!(AB,Hexp,Trot_test)
-# 	#mul!(BA,Trot_test,Hexp)
-# 	C=AB-BA
-
-# 	sum=0.0
-# 	for eye=1:Ntrans*Nrot
-# 		for jay=1:Ntrans*Nrot
-# 			mag=abs(C[eye,jay])
-# 			sum+=mag
-# #			if mag>1e-10
-# #				println(mag)
-# #			end
-# 		end
-# 	end
-# 	println("para [JZ,H] = ",sum)
-
-# 	mul!(AB,LZ_mat,Hexp)
-# 	mul!(BA,Hexp,LZ_mat)
-# 	#mul!(AB,Hexp,Trot_test)
-# 	#mul!(BA,Trot_test,Hexp)
-# 	C=AB-BA
-
-# 	sum=0.0
-# 	for eye=1:Ntrans*Nrot
-# 		for jay=1:Ntrans*Nrot
-# 			mag=abs(C[eye,jay])
-# 			sum+=mag
-# #			if mag>1e-10
-# #				println(mag)
-# #			end
-# 		end
-# 	end
-# 	println("para [LZ,H] = ",sum)
-
- 	e_para,ev_para=eigen(Hexp)
-
-	temp_mat1= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
-	temp_mat2= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
-
-	mul!(temp_mat1,JZ_plus_LZ,ev_para)
-	mul!(temp_mat2,conj(transpose(ev_para)),temp_mat1)
-
-	println("<i|LZ_JZ|j>")
-	for i=1:16
-		for j=1:16
-			print(round(real(temp_mat2[i,j]),digits=2),"   ")
+		e_para,ev_para=eigen(Hexp)
+		temp_mat1= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
+		temp_mat2= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
+		mul!(temp_mat1,JZ_plus_LZ,ev_para)
+		mul!(temp_mat2,conj(transpose(ev_para)),temp_mat1)
+		println("<i|LZ_JZ|j>")
+		for i=1:16
+			for j=1:16
+				print(round(real(temp_mat2[i,j]),digits=2),"   ")
+			end
+			println()
 		end
-		println()
+	# 	AB= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
+	# 	BA= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
+
+	# 	#mul!(AB,JZ_plus_LZ,Hexp)
+	# 	#mul!(BA,Hexp,JZ_plus_LZ)
+	# 	mul!(AB,JZ_mat+LZ_mat,Hexp)
+	# 	mul!(BA,Hexp,JZ_mat+LZ_mat)
+	# 	#mul!(AB,Hexp,Trot_test)
+	# 	#mul!(BA,Trot_test,Hexp)
+	# 	C=AB-BA
+
+	# 	sum=0.0
+	# 	for eye=1:Ntrans*Nrot
+	# 		for jay=1:Ntrans*Nrot
+	# 			mag=abs(C[eye,jay])
+	# 			sum+=mag
+	# #			if mag>1e-10
+	# #				println(mag)
+	# #			end
+	# 		end
+	# 	end
+	# 	println("para [JZ+LZ,H] = ",sum)
+
+	# 	mul!(AB,JZ_mat,Hexp)
+	# 	mul!(BA,Hexp,JZ_mat)
+	# 	#mul!(AB,Hexp,Trot_test)
+	# 	#mul!(BA,Trot_test,Hexp)
+	# 	C=AB-BA
+
+	# 	sum=0.0
+	# 	for eye=1:Ntrans*Nrot
+	# 		for jay=1:Ntrans*Nrot
+	# 			mag=abs(C[eye,jay])
+	# 			sum+=mag
+	# #			if mag>1e-10
+	# #				println(mag)
+	# #			end
+	# 		end
+	# 	end
+	# 	println("para [JZ,H] = ",sum)
+
+	# 	mul!(AB,LZ_mat,Hexp)
+	# 	mul!(BA,Hexp,LZ_mat)
+	# 	#mul!(AB,Hexp,Trot_test)
+	# 	#mul!(BA,Trot_test,Hexp)
+	# 	C=AB-BA
+
+	# 	sum=0.0
+	# 	for eye=1:Ntrans*Nrot
+	# 		for jay=1:Ntrans*Nrot
+	# 			mag=abs(C[eye,jay])
+	# 			sum+=mag
+	# #			if mag>1e-10
+	# #				println(mag)
+	# #			end
+	# 		end
+	# 	end
+	# 	println("para [LZ,H] = ",sum)
 	end
-
-
-# 	e_deg,ev_deg=eigen(temp_mat2)
-
-# 	for e in e_deg
-# 		println(round(real(e),digits=16))
-# 	end
 
 	#e_para,Wpara=eigen(Hexp)
 	# for eye in e_para
