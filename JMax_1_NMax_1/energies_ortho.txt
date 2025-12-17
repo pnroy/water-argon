@@ -1,0 +1,5 @@
+#nmax= 1 NR= 11 Ntheta= 11 Nphi= 11
+#jmax= 1 Nalpha= 11 Nphi= 11 Nchi= 11
+#Ntrans= 4
+#Nrot= 6
+

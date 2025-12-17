@@ -5,12 +5,16 @@ lines_ortho = readlines(f_ortho)
 close(f_para)
 close(f_ortho)
 
-fwhm=0.1
+
 
 Nw=1000
 wmax=135
 wmin=1
 dw=(wmax-wmin)/Nw
+
+fwhmmin=0.01
+fwhmmax=2.5
+dfwhm=(fwhmmax-fwhmmin)/Nw
 
 Iw=zeros(Float64,Nw)
 
@@ -29,10 +33,11 @@ for line in lines_para
     #println(deltaw," ",intensity)
     for i=1:Nw
         w=wmin+(i-1)*dw
-        x=(w-w0)/fwhm/2.0
         #boltz=exp(-(E0)/kBT)
         boltz=exp(-(E0)/kBT)-exp(-(E0+w0)/kBT)
         #Iw[i]+=intensity*1.0/(1.0+x*x)*boltz
+        fwhm=fwhmmin+i*dfwhm
+        x=(w-w0)/fwhm/2.0
         Iw[i]+=w*intensity*1.0/(1.0+x*x)*boltz
     end
 end
@@ -51,11 +56,12 @@ for line in lines_ortho
     #println(w0," ",intensity)
     for i=1:Nw
         w=wmin+(i-1)*dw
-        x=(w-w0)/fwhm/2.0
         #boltz=exp(-(E0-gs_ortho)/kBT)
         #boltz=exp(-(E0)/kBT)
         boltz=exp(-(E0)/kBT)-exp(-(E0+w0)/kBT)
         #Iw[i]+=intensity*1.0/(1.0+x*x)*boltz*3
+        fwhm=fwhmmin+i*dfwhm
+        x=(w-w0)/fwhm/2.0
         Iw[i]+=w*intensity*1.0/(1.0+x*x)*boltz*3
     end
 end

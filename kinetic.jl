@@ -37,6 +37,7 @@ D3=0.25*(Ae-Ce)
 Trot=zeros(ComplexF64,(N,N))
 Jx=zeros(ComplexF64,(N,N))
 Jz=zeros(ComplexF64,(N,N))
+JZ=zeros(ComplexF64,(N,N))
 
 i1=0
 i2=0
@@ -66,11 +67,12 @@ for j=0:jmax
         	end
             Trot[i1,i1]=j*(j+1)*D1+D2*k1^2
             Jz[i1,i1]=k1
+            JZ[i1,i1]=m
         end
 	end
 end
 
-return Trot,Jx,Jz
+return Trot,Jx,Jz,JZ
 end
 
 ####################################################################################################################
@@ -86,6 +88,7 @@ for n=0:nmax
 end
 
 Ttrans = zeros(ComplexF64,(Nspec,Nspec))
+LZ = zeros(ComplexF64,(Nspec,Nspec))
 
 i1=0
 for n1=0:nmax
@@ -106,6 +109,7 @@ for m1=-l1:l1
 	end
 	end
 	end
+	LZ[i1,i1]=m1
 end
 end
 end
@@ -120,7 +124,7 @@ end
 end
 end
 
-return Ttrans
+return Ttrans,LZ
 end
 ####################################################################################################################
 function kinetic_translation(nmax,omega,mass)
