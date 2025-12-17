@@ -702,7 +702,7 @@ let
 	end
 	close(f)
 	testQN=1
-	if testQn==0
+	if testQN==0
 		# explicit diag
 		Nsize_para=Ntrans*Nrot
 		Hexp= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
