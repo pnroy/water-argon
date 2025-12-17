@@ -702,20 +702,20 @@ let
 	end
 	close(f)
 	# explicit diag
-# 	Nsize_para=Ntrans*Nrot
-# 	Hexp= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
-# 	v=zeros(ComplexF64,Ntrans*Nrot)
-# 	u=zeros(ComplexF64,Ntrans*Nrot)
-# 	w=zeros(ComplexF64,Ntrans*Nrot)
-# 	for eye=1:Ntrans*Nrot
-# 		u[eye]=1.0+0.0im
-# 		for jay=1:Ntrans*Nrot
-# 			v[jay]=1.0+0.0im
-# 			Hexp[eye,jay]=dot(conj(u),Hv!(w,v))*(1.0+0.0000000001*(rand()-0.5))
-# 			v[jay]=0.0+0.0im
-# 		end
-# 		u[eye]=0.0+0.0im
-# 	end
+	Nsize_para=Ntrans*Nrot
+	Hexp= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
+	v=zeros(ComplexF64,Ntrans*Nrot)
+	u=zeros(ComplexF64,Ntrans*Nrot)
+	w=zeros(ComplexF64,Ntrans*Nrot)
+	for eye=1:Ntrans*Nrot
+		u[eye]=1.0+0.0im
+		for jay=1:Ntrans*Nrot
+			v[jay]=1.0+0.0im
+			Hexp[eye,jay]=dot(conj(u),Hv!(w,v))*(1.0+0.0000000001*(rand()-0.5))
+			v[jay]=0.0+0.0im
+		end
+		u[eye]=0.0+0.0im
+	end
 
 # 	AB= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
 # 	BA= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
@@ -776,21 +776,21 @@ let
 # 	end
 # 	println("para [LZ,H] = ",sum)
 
-# 	e_para,ev_para=eigen(Hexp)
+ 	e_para,ev_para=eigen(Hexp)
 
-# 	temp_mat1= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
-# 	temp_mat2= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
+	temp_mat1= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
+	temp_mat2= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
 
-# 	mul!(temp_mat1,JZ_plus_LZ,ev_para)
-# 	mul!(temp_mat2,conj(transpose(ev_para)),temp_mat1)
+	mul!(temp_mat1,JZ_plus_LZ,ev_para)
+	mul!(temp_mat2,conj(transpose(ev_para)),temp_mat1)
 
-# 	println("<i|LZ_JZ|j>")
-# 	for i=1:16
-# 		for j=1:16
-# 			print(round(real(temp_mat2[i,j]),digits=2),"   ")
-# 		end
-# 		println()
-# 	end
+	println("<i|LZ_JZ|j>")
+	for i=1:16
+		for j=1:16
+			print(round(real(temp_mat2[i,j]),digits=2),"   ")
+		end
+		println()
+	end
 
 
 # 	e_deg,ev_deg=eigen(temp_mat2)
