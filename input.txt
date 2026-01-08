@@ -16,7 +16,7 @@ nmax=	2
 mH=	1.007825	#amu
 mO=	15.994915
 k=	4.0	#J/m^2
-dCI= 10.0	#pm
+dCI= 0.0	#pm
 
 #Integration grid#
 NR=	11

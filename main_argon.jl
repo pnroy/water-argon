@@ -73,6 +73,8 @@ function Hv!(y::AbstractVector,x::AbstractVector)
 		end
 	end	
 
+
+
 	k=0
 	for it=1:Ntrans
 	for ir=1:Nrot
@@ -81,7 +83,7 @@ function Hv!(y::AbstractVector,x::AbstractVector)
 		#y[k]=Mv1[ir,it] + Mv2[ir,it]  # no pot
 		#y[k]=Mv2[ir,it]   # rot kin
 
-		# noise=(1.0+0.001*(randn(rng)-0.5))
+		#noise=(1.0+0.01*(randn(rng)-0.5))
 		# noise_mag=abs(noise)
 		# norm_noise=noise/noise_mag
 		#y[k]*=noise
@@ -103,6 +105,21 @@ end
 function matrix_prod_AB(A,B)
 	C = BLAS.gemm('N','N', A,B)
 	return C
+end
+
+function commutator(A,B)
+	C= matrix_prod_AB(A,B)-matrix_prod_AB(B,A)
+
+	n=size(A)[1]
+
+	sum=0.0
+	for eye=1:n
+		for jay=1:n
+			mag=abs(C[eye,jay])
+			sum+=mag
+		end
+	end
+	return sum
 end
 
 ####################################
@@ -263,16 +280,20 @@ d_phi=0.0
 #################################################################
 #Ttrans = kinetic_trans_analytic(nmax,omega)
 Ttrans = kinetic_translation(nmax,omega,mass)
-dummy,LZ=kinetic_trans_analytic(nmax,omega)
+dummy,LX,LY,LZ=kinetic_trans_analytic(nmax,omega)
 H3D=H3D_translation(nmax,omega,mass)
-Trot,Jx,Jz,JZ = kinetic_rotation(jmax,mmax,kmax,Ae,Be,Ce)
+Trot,Jx,Jz,JX,JY,JZ = kinetic_rotation(jmax,mmax,kmax,Ae,Be,Ce)
 
 # eLZ,evLZ=eigen(LZ)
 # println("LZ eigenvalues: ",eLZ)
 #Project kinetic matrix to spin sub space#
 Tpara = spin_isomer("para",jmax,Trot)
+JXpara=spin_isomer("para",jmax,JX)
+JYpara=spin_isomer("para",jmax,JY)
 JZpara=spin_isomer("para",jmax,JZ)
 Tortho = spin_isomer("ortho",jmax,Trot)
+JXortho = spin_isomer("ortho",jmax,JX)
+JYortho = spin_isomer("ortho",jmax,JY)
 JZortho = spin_isomer("ortho",jmax,JZ)
 
 # irot=0
@@ -572,14 +593,29 @@ let
 	global Nstates=size(e_para)[1]
 	#JZ+LZ expectation
 
+	JX_plus_LX=zeros(ComplexF64,(Npara*Ntrans,Npara*Ntrans))
+	JY_plus_LY=zeros(ComplexF64,(Npara*Ntrans,Npara*Ntrans))
 	JZ_plus_LZ=zeros(ComplexF64,(Npara*Ntrans,Npara*Ntrans))
+	JX_mat=zeros(ComplexF64,(Npara*Ntrans,Npara*Ntrans))
+	JY_mat=zeros(ComplexF64,(Npara*Ntrans,Npara*Ntrans))
 	JZ_mat=zeros(ComplexF64,(Npara*Ntrans,Npara*Ntrans))
 	LZ_mat=zeros(ComplexF64,(Npara*Ntrans,Npara*Ntrans))
+	LX_mat=zeros(ComplexF64,(Npara*Ntrans,Npara*Ntrans))
+	LY_mat=zeros(ComplexF64,(Npara*Ntrans,Npara*Ntrans))
 	Trot_test=zeros(ComplexF64,(Npara*Ntrans,Npara*Ntrans))
+	Ttrans_test=zeros(ComplexF64,(Npara*Ntrans,Npara*Ntrans))
 
 	#for i=1:Npara
 	#	println(real(JZpara[i,:]))
 	#end
+
+	for it=1:Ntrans
+		for ir=1:Npara
+			for itp=1:Ntrans
+				Ttrans_test[(it-1)*Npara+ir,(itp-1)*Npara+ir]=Ttrans[it,itp]
+			end
+		end
+	end
 
 	i=0
 	for n1=0:nmax
@@ -599,23 +635,74 @@ let
 			end
 		end
 	end
+
+	i=0
+	for n1=0:nmax
+		for l1=n1:-2:0
+			for m1=-l1:l1
+				i+=1
+				for irot=1:Npara
+					for irotp=1:Npara
+						JX_plus_LX[(i-1)*(Npara)+irot,(i-1)*(Npara)+irotp]=JXpara[irot,irotp]
+						JX_mat[(i-1)*(Npara)+irot,(i-1)*(Npara)+irotp]=JXpara[irot,irotp]
+						JY_plus_LY[(i-1)*(Npara)+irot,(i-1)*(Npara)+irotp]=JYpara[irot,irotp]
+						JY_mat[(i-1)*(Npara)+irot,(i-1)*(Npara)+irotp]=JYpara[irot,irotp]
+					end
+				end
+			end
+		end
+	end
+
+	i1=0
+	for n1=0:nmax
+		for l1=n1:-2:0
+			for m1=-l1:l1
+				i1+=1
+				i2=0
+				for n2=0:nmax
+					for l2=n2:-2:0
+						for m2=-l2:l2
+							i2+=1
+							if n1 == n2 && l1 == l2 
+								for irot=1:Npara
+									JX_plus_LX[(i1-1)*(Npara)+irot,(i2-1)*(Npara)+irot]+=LX[i1,i2]
+									JY_plus_LY[(i1-1)*(Npara)+irot,(i2-1)*(Npara)+irot]+=LY[i1,i2]
+									LX_mat[(i1-1)*(Npara)+irot,(i2-1)*(Npara)+irot]=LX[i1,i2]
+									LY_mat[(i1-1)*(Npara)+irot,(i2-1)*(Npara)+irot]=LY[i1,i2]
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
+
 	#println(sum," ",norm)
 	#println()
 
-	# for state=1:Nstates
-	# 	println("state ",state," E=",round(real(e_para[state]-e_para[1])*eHtocm1,digits=8))
+	sum=zeros(Float64,(3,3))
+	for s=2:4
+		for sp=2:4
+			for i=1:Ntrans*Nrot
+				sum[s-1,sp-1]+=real(conj(Wpara[i,s])*JZ_plus_LZ[i,i]*Wpara[i,sp])*(1.0+0.000001*(rand()-0.5))
+			end
+		end
+	end
 
-	# 	i=0
-	# 	sum=0
-	# 	norm=0
-	# 	itrans=0
-	# 	for n1=0:nmax
-	# 		for l1=n1:-2:0
-	# 			for m1=-l1:l1
-	# 				itrans+=1
-	# 				irot=0
-	# 				for irot=1:Npara
-	# 					sum+=(Wpara[(itrans-1)*Npara+irot,state]*conj(Wpara[(itrans-1)*Npara+irot,state]))*(m1+(JZpara[irot,irot]))
+	println("<i|LZ+JZ|j>")
+	for i=1:3
+		for j=1:3
+			print(round(real(sum[i,j]),digits=5),"   ")
+		end
+		println()
+	end
+	e_sum,ev_sum=eigen(sum)
+	println(e_sum)
+
+	
+	#sum+=(Wpara[(itrans-1)*Npara+irot,state]*conj(Wpara[(itrans-1)*Npara+irot,state]))*(m1+(JZpara[irot,irot]))
 	# 					norm+=(Wpara[(itrans-1)*Npara+irot,state]*conj(Wpara[(itrans-1)*Npara+irot,state]))
 	# 				end
 	# 			end
@@ -624,6 +711,7 @@ let
 	# 	println("<JZ+LZ> ",sum," ",norm)
 	# 	println()
 	# end
+
 
 	#rotational analysis
 	f = open(path*"rotational_wavefunction_para.txt", "w")
@@ -670,7 +758,6 @@ let
 		end
 		println(f)
 		println(f_rt)
-
 	end
 	close(f)
 	close(f_rt)
@@ -701,7 +788,7 @@ let
 		println(f)
 	end
 	close(f)
-	testQN=1
+	testQN=0
 	if testQN==0
 		# explicit diag
 		Nsize_para=Ntrans*Nrot
@@ -714,6 +801,7 @@ let
 			for jay=1:Ntrans*Nrot
 				v[jay]=1.0+0.0im
 				Hexp[eye,jay]=dot(conj(u),Hv!(w,v))*(1.0+0.000001*(rand()-0.5))
+				#Hexp[eye,jay]=dot(conj(u),Hv!(w,v))
 				v[jay]=0.0+0.0im
 			end
 			u[eye]=0.0+0.0im
@@ -721,73 +809,80 @@ let
 		e_para,ev_para=eigen(Hexp)
 		temp_mat1= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
 		temp_mat2= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
-		mul!(temp_mat1,JZ_plus_LZ,ev_para)
+		mul!(temp_mat1,JX_plus_LX,ev_para)
 		mul!(temp_mat2,conj(transpose(ev_para)),temp_mat1)
-		println("<i|LZ_JZ|j>")
-		for i=1:16
-			for j=1:16
+		println("<i|LX+JX|j>")
+		for i=1:10
+			for j=1:10
 				print(round(real(temp_mat2[i,j]),digits=2),"   ")
 			end
 			println()
 		end
-	# 	AB= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
-	# 	BA= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
 
-	# 	#mul!(AB,JZ_plus_LZ,Hexp)
-	# 	#mul!(BA,Hexp,JZ_plus_LZ)
-	# 	mul!(AB,JZ_mat+LZ_mat,Hexp)
-	# 	mul!(BA,Hexp,JZ_mat+LZ_mat)
-	# 	#mul!(AB,Hexp,Trot_test)
-	# 	#mul!(BA,Trot_test,Hexp)
-	# 	C=AB-BA
+		sum2=zeros(Float64,(3,3))
+		for i=2:4
+			for j=2:4
+				sum2[i-1,j-1]=real(temp_mat2[i,j])
+			end
+		end
 
-	# 	sum=0.0
-	# 	for eye=1:Ntrans*Nrot
-	# 		for jay=1:Ntrans*Nrot
-	# 			mag=abs(C[eye,jay])
-	# 			sum+=mag
-	# #			if mag>1e-10
-	# #				println(mag)
-	# #			end
-	# 		end
-	# 	end
-	# 	println("para [JZ+LZ,H] = ",sum)
+		e_2,ev_2=eigen(sum2)
+		println(e_2)
 
-	# 	mul!(AB,JZ_mat,Hexp)
-	# 	mul!(BA,Hexp,JZ_mat)
-	# 	#mul!(AB,Hexp,Trot_test)
-	# 	#mul!(BA,Trot_test,Hexp)
-	# 	C=AB-BA
+		temp_mat1= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
+		temp_mat2= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
+		mul!(temp_mat1,JY_plus_LY,ev_para)
+		mul!(temp_mat2,conj(transpose(ev_para)),temp_mat1)
+		println("<i|LY+JY|j>")
+		for i=1:10
+			for j=1:10
+				print(round(real(temp_mat2[i,j]),digits=2),"   ")
+			end
+			println()
+		end
 
-	# 	sum=0.0
-	# 	for eye=1:Ntrans*Nrot
-	# 		for jay=1:Ntrans*Nrot
-	# 			mag=abs(C[eye,jay])
-	# 			sum+=mag
-	# #			if mag>1e-10
-	# #				println(mag)
-	# #			end
-	# 		end
-	# 	end
-	# 	println("para [JZ,H] = ",sum)
+		sum2=zeros(Float64,(3,3))
+		for i=2:4
+			for j=2:4
+				sum2[i-1,j-1]=real(temp_mat2[i,j])
+			end
+		end
 
-	# 	mul!(AB,LZ_mat,Hexp)
-	# 	mul!(BA,Hexp,LZ_mat)
-	# 	#mul!(AB,Hexp,Trot_test)
-	# 	#mul!(BA,Trot_test,Hexp)
-	# 	C=AB-BA
+		e_2,ev_2=eigen(sum2)
+		println(e_2)
 
-	# 	sum=0.0
-	# 	for eye=1:Ntrans*Nrot
-	# 		for jay=1:Ntrans*Nrot
-	# 			mag=abs(C[eye,jay])
-	# 			sum+=mag
-	# #			if mag>1e-10
-	# #				println(mag)
-	# #			end
-	# 		end
-	# 	end
-	# 	println("para [LZ,H] = ",sum)
+		temp_mat1= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
+		temp_mat2= zeros(ComplexF64,(Ntrans*Nrot,Ntrans*Nrot))
+		mul!(temp_mat1,JZ_plus_LZ,ev_para)
+		mul!(temp_mat2,conj(transpose(ev_para)),temp_mat1)
+		println("<i|LZ+JZ|j>")
+		for i=1:10
+			for j=1:10
+				print(round(real(temp_mat2[i,j]),digits=2),"   ")
+			end
+			println()
+		end
+
+		sum2=zeros(Float64,(3,3))
+		for i=2:4
+			for j=2:4
+				sum2[i-1,j-1]=real(temp_mat2[i,j])
+			end
+		end
+
+		e_2,ev_2=eigen(sum2)
+		println(e_2)
+
+	
+		println("para [JX+LX,H] = "," ",commutator(JX_plus_LX,Hexp))
+		println("para [JX+LX,Trot+Ttrans] = "," ",commutator(JX_plus_LX,Trot_test+Ttrans_test))
+
+		println("para [JY+LY,H] = "," ",commutator(JY_plus_LY,Hexp))
+		println("para [JY+LY,Trot+Ttrans] = "," ",commutator(JY_plus_LY,Trot_test+Ttrans_test))
+
+		println("para [JZ+LZ,H] = "," ",commutator(JZ_plus_LZ,Hexp))
+		println("para [JZ+LZ,Trot+Ttrans] = "," ",commutator(JZ_plus_LZ,Trot_test+Ttrans_test))
+	
 	end
 
 	#e_para,Wpara=eigen(Hexp)

@@ -42,41 +42,47 @@ JY=zeros(ComplexF64,(N,N))
 JZ=zeros(ComplexF64,(N,N))
 
 i1=0
+i2=0
+i2_old=0
 for j=0:jmax
 	mj=min(mmax,j)
 	kj=min(kmax,j)
 	for m=-mj:mj
+		i2_old=i2
 		for k1=-kj:kj
-			i1+=1			
-			i2=0
+			i1+=1
+			i2=i2_old
+        	for k2=-kj:kj
+                i2+=1
+				if k1 == k2-2
+                    Trot[i1,i2]=D3*sqrt(1.0*j*(j+1)-1.0*k2*(k2-1))*sqrt(1.0*j*(j+1)-1.0*(k2-1)*(k2-2))
+                end
+                if k1 == k2+2
+                    Trot[i1,i2]=D3*sqrt(1.0*j*(j+1)-1.0*k2*(k2+1))*sqrt(1.0*j*(j+1)-1.0*(k2+1)*(k2+2))
+                end
+				if k1 == k2-1
+                    Jx[i1,i2]=0.5*sqrt(1.0*j*(j+1)-1.0*k2*(k2-1))
+                end
+                if k1 == k2+1
+                    Jx[i1,i2]=0.5*sqrt(1.0*j*(j+1)-1.0*k2*(k2+1))
+                end
+        	end
+
+			i3=0
 			for j2=0:jmax
 				mj2=min(mmax,j2)
 				kj2=min(kmax,j2)
 				for m2=-mj2:mj2
 					for k2=-kj2:kj2
-						i2+=1
-						if m==m2 && j==j2
-							if k1 == k2-2
-								Trot[i1,i2]=D3*sqrt(1.0*j*(j+1)-1.0*k2*(k2-1))*sqrt(1.0*j*(j+1)-1.0*(k2-1)*(k2-2))
-							end
-							if k1 == k2+2
-								Trot[i1,i2]=D3*sqrt(1.0*j*(j+1)-1.0*k2*(k2+1))*sqrt(1.0*j*(j+1)-1.0*(k2+1)*(k2+2))
-							end
-							if k1 == k2-1
-								Jx[i1,i2]=0.5*sqrt(1.0*j*(j+1)-1.0*k2*(k2-1))
-							end
-							if k1 == k2+1
-								Jx[i1,i2]=0.5*sqrt(1.0*j*(j+1)-1.0*k2*(k2+1))
-							end
-						end
+						i3+=1
 						if k1==k2 && j==j2
 							if m == m2-1 
-								JX[i1,i2]=0.5*sqrt(j*(j+1)-m2*(m2-1))
-								JY[i1,i2]=0.5im*sqrt(j*(j+1)-m2*(m2-1))
+								JX[i1,i3]=0.5*sqrt((j+m2)*(j-m2+1))
+								JY[i1,i3]=0.5im*sqrt((j+m2)*(j-m2+1))
 							end
 							if m == m2+1
-								JX[i1,i2]=0.5*sqrt(j*(j+1)-m2*(m2+1))
-								JY[i1,i2]=-0.5im*sqrt(j*(j+1)-m2*(m2+1)) # verify sign
+								JX[i1,i3]=0.5*sqrt((j-m2)*(j+m2+1))
+								JY[i1,i3]=-0.5im*sqrt((j-m2)*(j+m2+1)) # verify sign
 							end
 						end
 					end
