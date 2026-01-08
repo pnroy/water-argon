@@ -875,13 +875,32 @@ let
 
 	
 		println("para [JX+LX,H] = "," ",commutator(JX_plus_LX,Hexp))
-		println("para [JX+LX,Trot+Ttrans] = "," ",commutator(JX_plus_LX,Trot_test+Ttrans_test))
-
 		println("para [JY+LY,H] = "," ",commutator(JY_plus_LY,Hexp))
-		println("para [JY+LY,Trot+Ttrans] = "," ",commutator(JY_plus_LY,Trot_test+Ttrans_test))
-
 		println("para [JZ+LZ,H] = "," ",commutator(JZ_plus_LZ,Hexp))
+		println()
+		println("para [JX,H] = "," ",commutator(JX_mat,Hexp))
+		println("para [JY,H] = "," ",commutator(JY_mat,Hexp))
+		println("para [JZ,H] = "," ",commutator(JZ_mat,Hexp))
+		println()
+		println("para [LX,H] = "," ",commutator(LX_mat,Hexp))
+		println("para [LY,H] = "," ",commutator(LY_mat,Hexp))
+		println("para [LZ,H] = "," ",commutator(LZ_mat,Hexp))
+		println()
+
+
+		println("para [JX+LX,Trot+Ttrans] = "," ",commutator(JX_plus_LX,Trot_test+Ttrans_test))
+		println("para [JY+LY,Trot+Ttrans] = "," ",commutator(JY_plus_LY,Trot_test+Ttrans_test))
 		println("para [JZ+LZ,Trot+Ttrans] = "," ",commutator(JZ_plus_LZ,Trot_test+Ttrans_test))
+		println()
+
+		println("para [JX,Trot+Ttrans] = "," ",commutator(JX_mat,Trot_test+Ttrans_test))
+		println("para [JY,Trot+Ttrans] = "," ",commutator(JY_mat,Trot_test+Ttrans_test))
+		println("para [JZ,Trot+Ttrans] = "," ",commutator(JZ_mat,Trot_test+Ttrans_test))
+		println()
+
+		println("para [LX,Trot+Ttrans] = "," ",commutator(LX_mat,Trot_test+Ttrans_test))
+		println("para [LY,Trot+Ttrans] = "," ",commutator(LY_mat,Trot_test+Ttrans_test))
+		println("para [LZ,Trot+Ttrans] = "," ",commutator(LZ_mat,Trot_test+Ttrans_test))
 	
 	end
 
